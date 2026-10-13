@@ -6,9 +6,24 @@
   },
   "lines": [
     {
-      "id": "pipeline-test",
-      "text": "The way is open.",
-      "file": "audio/pipeline-test.mp3"
+      "id": "room-threshold",
+      "text": "Cold air settles around you. Behind you is a heavy wooden door. A narrow stone passage continues north.",
+      "file": "audio/room-threshold.mp3"
+    },
+    {
+      "id": "room-dripping-passage",
+      "text": "Water ticks steadily onto stone. The passage runs south to north. Somewhere to the east, you hear a faint draft.",
+      "file": "audio/room-dripping-passage.mp3"
+    },
+    {
+      "id": "room-alcove",
+      "text": "You step into a shallow alcove. Your footsteps sound close here. The stone wall is inches from your hands. The passage lies west.",
+      "file": "audio/room-alcove.mp3"
+    },
+    {
+      "id": "room-old-well",
+      "text": "The corridor opens into a round chamber. Your footsteps carry farther now. Water echoes from a deep well in the center. The passage back is south.",
+      "file": "audio/room-old-well.mp3"
     }
   ]
 }
