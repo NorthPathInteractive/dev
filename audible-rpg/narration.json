@@ -4,5 +4,11 @@
     "model": "eleven_multilingual_v2",
     "output_format": "mp3_44100_128"
   },
-  "lines": []
+  "lines": [
+    {
+      "id": "pipeline-test",
+      "text": "The way is open.",
+      "file": "audio/pipeline-test.mp3"
+    }
+  ]
 }
