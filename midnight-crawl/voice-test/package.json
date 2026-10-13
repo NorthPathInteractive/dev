@@ -1,0 +1,16 @@
+{
+  "name": "midnight-crawl-kokoro-voice-test",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "kokoro-js": "^1.2.1"
+  },
+  "devDependencies": {
+    "vite": "^7.1.0"
+  }
+}
