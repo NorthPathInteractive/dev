@@ -1,4 +1,4 @@
-import { KokoroTTS } from 'kokoro-js';
+import { KokoroTTS } from 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm';
 
 const MODEL = 'onnx-community/Kokoro-82M-v1.0-ONNX';
 const status = document.querySelector('#status');
