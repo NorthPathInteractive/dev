@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "audible-rpg-api",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-12",
+  "workers_dev": true,
+  "r2_buckets": [
+    {
+      "binding": "AUDIO_CACHE",
+      "bucket_name": "audible-rpg-audio-cache"
+    }
+  ]
+}
