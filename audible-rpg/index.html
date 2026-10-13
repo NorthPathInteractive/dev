@@ -1,38 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Audible RPG</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Audible RPG</title>
 <style>
-:root{color-scheme:dark;--bg:#101113;--panel:#191b1f;--line:#353940;--text:#f4f1e8;--muted:#aaa69d;--accent:#d2b36c}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:17px system-ui,-apple-system,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px}main{width:min(520px,100%)}h1{font-family:Georgia,serif;font-weight:500;letter-spacing:.04em;margin:0 0 5px}.sub{color:var(--muted);margin:0 0 22px}.scene{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;min-height:145px;display:flex;flex-direction:column;justify-content:center}.room{font-size:13px;text-transform:uppercase;letter-spacing:.13em;color:var(--accent);margin-bottom:9px}.desc{line-height:1.55}.pad{display:grid;grid-template-columns:repeat(3,76px);grid-template-rows:repeat(3,64px);gap:9px;justify-content:center;margin:25px 0}.pad button{font:inherit;font-size:24px;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:14px;touch-action:manipulation}.pad button:active{transform:scale(.96);background:#24272c}.n{grid-column:2}.w{grid-column:1;grid-row:2}.listen{grid-column:2;grid-row:2;font-size:12px!important;color:var(--accent)!important}.e{grid-column:3;grid-row:2}.s{grid-column:2;grid-row:3}.controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.controls button{min-height:44px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--text);padding:0 16px;font:inherit}.hint{text-align:center;color:var(--muted);font-size:13px;margin-top:18px}.status{text-align:center;color:var(--muted);font-size:13px;margin-top:10px}</style>
-</head>
-<body><main>
+:root{color-scheme:dark;--bg:#101113;--panel:#191b1f;--line:#353940;--text:#f4f1e8;--muted:#aaa69d;--accent:#d2b36c}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:17px system-ui,-apple-system,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px}main{width:min(520px,100%)}h1{font-family:Georgia,serif;font-weight:500;letter-spacing:.04em;margin:0 0 5px}.sub{color:var(--muted);margin:0 0 22px}.scene{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;min-height:145px;display:flex;flex-direction:column;justify-content:center}.room{font-size:13px;text-transform:uppercase;letter-spacing:.13em;color:var(--accent);margin-bottom:9px}.desc{line-height:1.55}.pad{display:grid;grid-template-columns:repeat(3,76px);grid-template-rows:repeat(3,64px);gap:9px;justify-content:center;margin:25px 0}.pad button{font:inherit;font-size:24px;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:14px;touch-action:manipulation}.pad button:active{transform:scale(.96);background:#24272c}.n{grid-column:2}.w{grid-column:1;grid-row:2}.listen{grid-column:2;grid-row:2;font-size:12px!important;color:var(--accent)!important}.e{grid-column:3;grid-row:2}.s{grid-column:2;grid-row:3}.controls{display:flex;gap:10px;justify-content:center}.controls button{min-height:44px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--text);padding:0 16px;font:inherit}.hint,.status{text-align:center;color:var(--muted);font-size:13px;margin-top:14px}
+</style></head><body><main>
 <h1>Audible RPG</h1><p class="sub">A headphones-first dungeon experiment.</p>
 <section class="scene" aria-live="polite"><div class="room" id="roomName"></div><div class="desc" id="description"></div></section>
-<div class="pad" aria-label="Movement controls">
-<button class="n" data-dir="n" aria-label="North">▲</button><button class="w" data-dir="w" aria-label="West">◀</button><button class="listen" id="listen">LISTEN</button><button class="e" data-dir="e" aria-label="East">▶</button><button class="s" data-dir="s" aria-label="South">▼</button>
-</div>
-<div class="controls"><button id="repeat">Repeat description</button><button id="voice">Voice: Auto</button></div>
-<p class="status" id="status">Tap a direction. Audio starts after your first interaction.</p><p class="hint">Keyboard: arrow keys or W A S D. Gamepad: D-pad.</p>
-</main>
-<script>
+<div class="pad" aria-label="Movement controls"><button class="n" data-dir="n" aria-label="North">▲</button><button class="w" data-dir="w" aria-label="West">◀</button><button class="listen" id="listen">LISTEN</button><button class="e" data-dir="e" aria-label="East">▶</button><button class="s" data-dir="s" aria-label="South">▼</button></div>
+<div class="controls"><button id="repeat">Repeat narration</button></div><p class="status" id="status">Tap LISTEN to begin.</p><p class="hint">Headphones recommended · Arrow keys/WASD · Gamepad D-pad</p>
+<audio id="narrator" preload="auto"></audio>
+</main><script>
 const rooms={
-entry:{name:'The Threshold',text:'Cold air settles around you. Behind you is a heavy wooden door. A narrow stone passage continues north.',exits:{n:'hall'}},
-hall:{name:'Dripping Passage',text:'Water ticks steadily onto stone. The passage runs south to north. Somewhere to the east, you hear a faint draft.',exits:{s:'entry',n:'well',e:'alcove'}},
-alcove:{name:'The Alcove',text:'You step into a shallow alcove. Your footsteps sound close here. The stone wall is inches from your hands. The passage lies west.',exits:{w:'hall'}},
-well:{name:'The Old Well',text:'The corridor opens into a round chamber. Your footsteps carry farther now. Water echoes from a deep well in the center. The passage back is south.',exits:{s:'hall'}}};
-let current='entry',voices=[],voiceIndex=-1,lastMove=0;
-const nameEl=document.querySelector('#roomName'),descEl=document.querySelector('#description'),statusEl=document.querySelector('#status'),voiceBtn=document.querySelector('#voice');
-function loadVoices(){voices=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));const preferred=voices.findIndex(v=>/Samantha|Daniel|Karen|Moira|Serena|Ava|Evan/i.test(v.name));voiceIndex=preferred>=0?preferred:(voices.length?0:-1);updateVoiceLabel()}
-function updateVoiceLabel(){voiceBtn.textContent=voiceIndex>=0?'Voice: '+voices[voiceIndex].name:'Voice: Auto'}
-loadVoices();speechSynthesis.onvoiceschanged=loadVoices;
-function speak(text){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);if(voiceIndex>=0)u.voice=voices[voiceIndex];u.rate=.86;u.pitch=.92;u.volume=1;speechSynthesis.speak(u)}
-function render(announce=true){const r=rooms[current];nameEl.textContent=r.name;descEl.textContent=r.text;if(announce)speak(r.text)}
-function blocked(dir){const words={n:'north',s:'south',e:'east',w:'west'};speak('You cannot go '+words[dir]+'.');statusEl.textContent='No passage '+words[dir]+'.'}
-function move(dir){const next=rooms[current].exits[dir];if(!next){blocked(dir);return}current=next;statusEl.textContent='Moved '+({n:'north',s:'south',e:'east',w:'west'})[dir]+'.';render(true)}
-function listen(){const r=rooms[current];const text=current==='hall'?'Dripping water is ahead and slightly left. A cool draft brushes your right cheek.':current==='well'?'Water falls far below you. The echo suggests a deep, open shaft.':current==='alcove'?'The sound is close and dry. There is open space to the west.':'The wooden door behind you creaks softly as the air moves.';speak(text);statusEl.textContent=text}
-document.querySelectorAll('[data-dir]').forEach(b=>b.addEventListener('click',()=>move(b.dataset.dir)));document.querySelector('#listen').addEventListener('click',listen);document.querySelector('#repeat').addEventListener('click',()=>render(true));voiceBtn.addEventListener('click',()=>{if(!voices.length)return;voiceIndex=(voiceIndex+1)%voices.length;updateVoiceLabel();speak('This is the selected narrator voice.')});
+entry:{name:'The Threshold',text:'Cold air settles around you. Behind you is a heavy wooden door. A narrow stone passage continues north.',audio:'audio/room-threshold.mp3',exits:{n:'hall'}},
+hall:{name:'Dripping Passage',text:'Water ticks steadily onto stone. The passage runs south to north. Somewhere to the east, you hear a faint draft.',audio:'audio/room-dripping-passage.mp3',exits:{s:'entry',n:'well',e:'alcove'}},
+alcove:{name:'The Alcove',text:'You step into a shallow alcove. Your footsteps sound close here. The stone wall is inches from your hands. The passage lies west.',audio:'audio/room-alcove.mp3',exits:{w:'hall'}},
+well:{name:'The Old Well',text:'The corridor opens into a round chamber. Your footsteps carry farther now. Water echoes from a deep well in the center. The passage back is south.',audio:'audio/room-old-well.mp3',exits:{s:'hall'}}};
+let current='entry',lastMove=0;const narrator=document.querySelector('#narrator'),nameEl=document.querySelector('#roomName'),descEl=document.querySelector('#description'),statusEl=document.querySelector('#status');
+function playRoom(){const r=rooms[current];narrator.pause();narrator.currentTime=0;narrator.src=r.audio;narrator.play().then(()=>statusEl.textContent='Narrating: '+r.name).catch(()=>statusEl.textContent='Tap LISTEN to hear '+r.name+'.')}
+function render(announce=true){const r=rooms[current];nameEl.textContent=r.name;descEl.textContent=r.text;if(announce)playRoom()}
+function move(dir){const next=rooms[current].exits[dir];if(!next){statusEl.textContent='No passage '+({n:'north',s:'south',e:'east',w:'west'})[dir]+'.';return}current=next;render(true)}
+document.querySelectorAll('[data-dir]').forEach(b=>b.addEventListener('click',()=>move(b.dataset.dir)));document.querySelector('#listen').addEventListener('click',playRoom);document.querySelector('#repeat').addEventListener('click',playRoom);
 window.addEventListener('keydown',e=>{const map={ArrowUp:'n',w:'n',W:'n',ArrowDown:'s',s:'s',S:'s',ArrowLeft:'w',a:'w',A:'w',ArrowRight:'e',d:'e',D:'e'};if(map[e.key]){e.preventDefault();move(map[e.key])}});
-function pollGamepad(){const gp=navigator.getGamepads?.()[0];if(gp){const now=Date.now();let d=null;if(gp.buttons[12]?.pressed)d='n';else if(gp.buttons[13]?.pressed)d='s';else if(gp.buttons[14]?.pressed)d='w';else if(gp.buttons[15]?.pressed)d='e';if(d&&now-lastMove>350){move(d);lastMove=now}}requestAnimationFrame(pollGamepad)}requestAnimationFrame(pollGamepad);render(false);
+function pollGamepad(){const gp=navigator.getGamepads?.()[0];if(gp){const now=Date.now();let d=null;if(gp.buttons[12]?.pressed)d='n';else if(gp.buttons[13]?.pressed)d='s';else if(gp.buttons[14]?.pressed)d='w';else if(gp.buttons[15]?.pressed)d='e';if(d&&now-lastMove>400){move(d);lastMove=now}}requestAnimationFrame(pollGamepad)}requestAnimationFrame(pollGamepad);render(false);
 </script></body></html>
