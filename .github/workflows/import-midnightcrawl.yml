@@ -1,0 +1,43 @@
+name: Import MidnightCrawl
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-midnightcrawl.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Safely copy MidnightCrawl
+        shell: bash
+        run: |
+          set -euo pipefail
+          DEST="midnight-crawl"
+          if [ -e "$DEST" ]; then
+            echo "Refusing to overwrite existing $DEST"
+            exit 1
+          fi
+          git clone --depth 1 https://github.com/NorthPathInteractive/MidnightCrawl.git /tmp/MidnightCrawl
+          rm -rf /tmp/MidnightCrawl/.git
+          mkdir "$DEST"
+          cp -a /tmp/MidnightCrawl/. "$DEST"/
+
+      - name: Commit imported project
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add midnight-crawl
+          git commit -m "Copy MidnightCrawl into dev as isolated project"
+          git push
