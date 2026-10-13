@@ -2,10 +2,6 @@ name: Audible RPG Narration
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'audible-rpg/narration.json'
 
 permissions:
   contents: write
@@ -16,7 +12,6 @@ concurrency:
 
 jobs:
   generate:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
