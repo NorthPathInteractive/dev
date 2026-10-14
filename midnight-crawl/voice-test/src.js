@@ -1,18 +1,37 @@
 import { KokoroTTS } from 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm';
 
-const VERSION = '0.2.1';
+const VERSION = '0.2.2';
 const MODEL = 'onnx-community/Kokoro-82M-v1.0-ONNX';
 const status = document.querySelector('#status');
 const speak = document.querySelector('#speak');
 const voiceSelect = document.querySelector('#voice');
 const player = document.querySelector('#player');
 const diagnostics = document.querySelector('#diagnostics');
+const timer = document.querySelector('#timer');
 let tts;
 let objectUrl;
+let timerInterval;
 
 function log(message) {
   const time = new Date().toLocaleTimeString();
   diagnostics.textContent += `\n[${time}] ${message}`;
+}
+
+function startTimer() {
+  const started = performance.now();
+  clearInterval(timerInterval);
+  timer.textContent = 'Generation time: 0.0 s';
+  timerInterval = setInterval(() => {
+    timer.textContent = `Generation time: ${((performance.now() - started) / 1000).toFixed(1)} s`;
+  }, 100);
+  return started;
+}
+
+function stopTimer(started) {
+  clearInterval(timerInterval);
+  const seconds = (performance.now() - started) / 1000;
+  timer.textContent = `Generation time: ${seconds.toFixed(2)} s`;
+  return seconds;
 }
 
 window.addEventListener('error', event => log(`Window error: ${event.message}`));
@@ -52,30 +71,35 @@ async function loadTTS() {
     voiceSelect.append(option);
   }
 
-  status.textContent = 'Ready to generate speech.';
+  status.textContent = 'Ready to run performance test.';
   return tts;
 }
 
 speak.addEventListener('click', async () => {
-  log('Speak button pressed.');
+  log('Performance test button pressed.');
+  let started;
   try {
     speak.disabled = true;
     const engine = await loadTTS();
-    status.textContent = 'Generating speech locally…';
-    log(`Generating speech with ${voiceSelect.value || 'am_michael'}…`);
-    const audio = await engine.generate(document.querySelector('#text').value, {
+    const text = document.querySelector('#text').value;
+    status.textContent = 'Generating short speech test locally…';
+    log(`Generating ${text.length} characters with ${voiceSelect.value || 'am_michael'}…`);
+    started = startTimer();
+    const audio = await engine.generate(text, {
       voice: voiceSelect.value || 'am_michael',
       speed: Number(document.querySelector('#speed').value),
     });
-    log('Speech generation completed.');
+    const seconds = stopTimer(started);
+    log(`Speech generation completed in ${seconds.toFixed(2)} seconds.`);
     if (objectUrl) URL.revokeObjectURL(objectUrl);
     const wav = audio.toBlob();
     objectUrl = URL.createObjectURL(wav);
     player.src = objectUrl;
     await player.play();
-    status.textContent = 'Playing local Kokoro speech.';
+    status.textContent = `Success — generated speech in ${seconds.toFixed(2)} seconds.`;
     log('Audio playback started.');
   } catch (error) {
+    if (started) stopTimer(started);
     console.error(error);
     const message = error?.stack || error?.message || String(error);
     status.textContent = `Error: ${error?.message || error}`;
