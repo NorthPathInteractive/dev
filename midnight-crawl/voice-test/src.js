@@ -1,10 +1,11 @@
 import { KokoroTTS } from 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm';
 
-const VERSION = '0.2.2';
+const VERSION = '0.3.0';
 const MODEL = 'onnx-community/Kokoro-82M-v1.0-ONNX';
+const DTYPE = 'q4';
+const DEVICE = 'wasm';
 const status = document.querySelector('#status');
 const speak = document.querySelector('#speak');
-const voiceSelect = document.querySelector('#voice');
 const player = document.querySelector('#player');
 const diagnostics = document.querySelector('#diagnostics');
 const timer = document.querySelector('#timer');
@@ -17,20 +18,20 @@ function log(message) {
   diagnostics.textContent += `\n[${time}] ${message}`;
 }
 
-function startTimer() {
+function startTimer(label = 'Generation') {
   const started = performance.now();
   clearInterval(timerInterval);
-  timer.textContent = 'Generation time: 0.0 s';
+  timer.textContent = `${label} time: 0.0 s`;
   timerInterval = setInterval(() => {
-    timer.textContent = `Generation time: ${((performance.now() - started) / 1000).toFixed(1)} s`;
+    timer.textContent = `${label} time: ${((performance.now() - started) / 1000).toFixed(1)} s`;
   }, 100);
   return started;
 }
 
-function stopTimer(started) {
+function stopTimer(started, label = 'Generation') {
   clearInterval(timerInterval);
   const seconds = (performance.now() - started) / 1000;
-  timer.textContent = `Generation time: ${seconds.toFixed(2)} s`;
+  timer.textContent = `${label} time: ${seconds.toFixed(2)} s`;
   return seconds;
 }
 
@@ -39,55 +40,33 @@ window.addEventListener('unhandledrejection', event => log(`Promise error: ${eve
 
 log(`JavaScript module loaded — v${VERSION}`);
 log(`Browser: ${navigator.userAgent}`);
-log('Kokoro library import succeeded.');
-status.textContent = 'Kokoro module loaded. Ready to initialize model.';
+log(`Configuration: ${DTYPE} on ${DEVICE}`);
+log(`WebGPU exposed by browser: ${'gpu' in navigator ? 'yes' : 'no'}`);
+status.textContent = `Ready to test Kokoro ${DTYPE}/${DEVICE}.`;
 
 async function loadTTS() {
   if (tts) return tts;
-  status.textContent = 'Downloading/loading Kokoro model…';
-  log(`Starting model load: ${MODEL}`);
-  tts = await KokoroTTS.from_pretrained(MODEL, { dtype: 'q8', device: 'wasm' });
-  log('Model initialized successfully.');
-
-  const voices = tts.list_voices();
-  log(`Voice API returned: ${Array.isArray(voices) ? voices.length + ' voices' : typeof voices}`);
-
-  if (Array.isArray(voices)) {
-    for (const voice of voices) {
-      const name = typeof voice === 'string' ? voice : voice.name;
-      const option = document.createElement('option');
-      option.value = name;
-      option.textContent = typeof voice === 'string' ? voice : `${name}${voice.language ? ` — ${voice.language}` : ''}`;
-      if (name === 'am_michael') option.selected = true;
-      voiceSelect.append(option);
-    }
-  }
-
-  if (!voiceSelect.value) {
-    const option = document.createElement('option');
-    option.value = 'am_michael';
-    option.textContent = 'am_michael';
-    option.selected = true;
-    voiceSelect.append(option);
-  }
-
-  status.textContent = 'Ready to run performance test.';
+  status.textContent = `Loading Kokoro ${DTYPE} model…`;
+  log(`Starting model load: ${MODEL} (${DTYPE}/${DEVICE})`);
+  const started = performance.now();
+  tts = await KokoroTTS.from_pretrained(MODEL, { dtype: DTYPE, device: DEVICE });
+  log(`Model initialized in ${((performance.now() - started) / 1000).toFixed(2)} seconds.`);
   return tts;
 }
 
 speak.addEventListener('click', async () => {
-  log('Performance test button pressed.');
+  log('q4 performance test button pressed.');
   let started;
   try {
     speak.disabled = true;
     const engine = await loadTTS();
     const text = document.querySelector('#text').value;
-    status.textContent = 'Generating short speech test locally…';
-    log(`Generating ${text.length} characters with ${voiceSelect.value || 'am_michael'}…`);
+    status.textContent = `Generating locally with ${DTYPE}/${DEVICE}…`;
+    log(`Generating ${text.length} characters with af_heart…`);
     started = startTimer();
     const audio = await engine.generate(text, {
-      voice: voiceSelect.value || 'am_michael',
-      speed: Number(document.querySelector('#speed').value),
+      voice: 'af_heart',
+      speed: 1,
     });
     const seconds = stopTimer(started);
     log(`Speech generation completed in ${seconds.toFixed(2)} seconds.`);
@@ -96,7 +75,7 @@ speak.addEventListener('click', async () => {
     objectUrl = URL.createObjectURL(wav);
     player.src = objectUrl;
     await player.play();
-    status.textContent = `Success — generated speech in ${seconds.toFixed(2)} seconds.`;
+    status.textContent = `Success — q4 generated speech in ${seconds.toFixed(2)} seconds.`;
     log('Audio playback started.');
   } catch (error) {
     if (started) stopTimer(started);
