@@ -1,27 +1,2 @@
 <!doctype html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Midnight Crawl — WebGPU Test</title>
-  <style>
-    body{font-family:system-ui,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;line-height:1.45}
-    .version,.config{font-weight:700;padding:6px 10px;background:#eee;border-radius:6px;display:inline-block;margin-right:6px}
-    #diagnostics{white-space:pre-wrap;background:#111;color:#eee;padding:12px;border-radius:8px;min-height:100px;font-family:ui-monospace,monospace;font-size:13px}
-    button{padding:14px 18px;margin:12px 0;font-size:1rem}
-    #status{font-weight:700}
-  </style>
-</head>
-<body>
-<main>
-  <h1>iPhone WebGPU Test</h1>
-  <p><span class="version">v0.4.0</span><span class="config">No Kokoro model</span></p>
-  <p>This is a quick capability check. It does not download Kokoro and it does not generate speech. We are only asking Safari whether it can give this webpage access to the iPhone GPU through WebGPU.</p>
-  <button id="run">Test WebGPU</button>
-  <p id="status">Loading test…</p>
-  <h2>Diagnostics</h2>
-  <div id="diagnostics">HTML loaded — v0.4.0</div>
-</main>
-<script type="module" src="./src.js?v=0.4.0"></script>
-</body>
-</html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Midnight Crawl — Kokoro WebGPU Test</title><style>body{font-family:system-ui,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;line-height:1.45}.version,.config{font-weight:700;padding:6px 10px;background:#eee;border-radius:6px;display:inline-block;margin-right:6px}#diagnostics{white-space:pre-wrap;background:#111;color:#eee;padding:12px;border-radius:8px;min-height:120px;font-family:ui-monospace,monospace;font-size:13px}button{padding:14px 18px;margin:12px 0;font-size:1rem}#status,#timer{font-weight:700}#timer{font-size:1.2rem}</style></head><body><main><h1>Kokoro WebGPU Benchmark</h1><p><span class="version">v0.5.0</span><span class="config">q4 + WebGPU</span></p><p>Your iPhone successfully exposed a real WebGPU device. This test now runs Kokoro on that GPU and measures how long it takes to say one short sentence.</p><p><strong>Test sentence:</strong> “A door stands ahead.”</p><button id="run">Run Kokoro WebGPU test</button><p id="status">Loading test…</p><p id="timer">Time: —</p><audio id="player" controls></audio><h2>Diagnostics</h2><div id="diagnostics">HTML loaded — v0.5.0</div></main><script type="module" src="./src.js?v=0.5.0"></script></body></html>
