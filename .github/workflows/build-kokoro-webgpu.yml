@@ -1,0 +1,49 @@
+name: Build Kokoro WebGPU Test
+
+on:
+  push:
+    paths:
+      - 'midnight-crawl/voice-test/**'
+      - '.github/workflows/build-kokoro-webgpu.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-kokoro-webgpu
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: midnight-crawl/voice-test/package-lock.json
+
+      - name: Install dependencies
+        working-directory: midnight-crawl/voice-test
+        run: npm install
+
+      - name: Build Vite bundle
+        working-directory: midnight-crawl/voice-test
+        run: npm run build
+
+      - name: Commit built test
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add midnight-crawl/voice-test-vite
+          if git diff --cached --quiet; then
+            echo "No build changes to commit."
+            exit 0
+          fi
+          git commit -m "Build bundled Kokoro WebGPU test"
+          git push
