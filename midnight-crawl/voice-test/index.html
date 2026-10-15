@@ -3,29 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Midnight Crawl — Kokoro Voice Test</title>
+  <title>Midnight Crawl — WebGPU Test</title>
   <style>
     body{font-family:system-ui,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;line-height:1.45}
-    textarea{width:100%;box-sizing:border-box}
     .version,.config{font-weight:700;padding:6px 10px;background:#eee;border-radius:6px;display:inline-block;margin-right:6px}
-    #timer{font-size:1.25rem;font-weight:700;margin:12px 0}
     #diagnostics{white-space:pre-wrap;background:#111;color:#eee;padding:12px;border-radius:8px;min-height:100px;font-family:ui-monospace,monospace;font-size:13px}
-    button{padding:12px 16px;margin:10px 0;font-size:1rem}
+    button{padding:14px 18px;margin:12px 0;font-size:1rem}
+    #status{font-weight:700}
   </style>
 </head>
 <body>
 <main>
-  <h1>Kokoro Mobile Performance Test</h1>
-  <p><span class="version">v0.3.0</span><span class="config">q4 + WASM</span></p>
-  <p>Our previous q8 test was far too slow. This test uses Kokoro's smaller q4 model to see whether quantization makes local iPhone speech practical.</p>
-  <textarea id="text" rows="3">A door stands ahead.</textarea>
-  <div><button id="speak">Run q4 voice test</button></div>
-  <p id="status">Page loaded. Waiting for Kokoro module…</p>
-  <p id="timer">Generation time: —</p>
-  <audio id="player" controls></audio>
+  <h1>iPhone WebGPU Test</h1>
+  <p><span class="version">v0.4.0</span><span class="config">No Kokoro model</span></p>
+  <p>This is a quick capability check. It does not download Kokoro and it does not generate speech. We are only asking Safari whether it can give this webpage access to the iPhone GPU through WebGPU.</p>
+  <button id="run">Test WebGPU</button>
+  <p id="status">Loading test…</p>
   <h2>Diagnostics</h2>
-  <div id="diagnostics">HTML loaded — v0.3.0</div>
+  <div id="diagnostics">HTML loaded — v0.4.0</div>
 </main>
-<script type="module" src="./src.js?v=0.3.0"></script>
+<script type="module" src="./src.js?v=0.4.0"></script>
 </body>
 </html>
