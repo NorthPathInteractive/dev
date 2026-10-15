@@ -1,14 +1,14 @@
 {
-  "name": "midnight-crawl-kokoro-voice-test",
+  "name": "midnight-crawl-onnx-webgpu-test",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.7.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build --base=/dev/midnight-crawl/voice-test-vite/ --outDir=../voice-test-vite --emptyOutDir"
   },
   "dependencies": {
-    "kokoro-js": "^1.2.1"
+    "onnxruntime-web": "latest"
   },
   "devDependencies": {
     "vite": "^7.1.0"
