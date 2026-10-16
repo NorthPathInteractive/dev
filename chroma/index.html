@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#05050a" />
+  <title>CHROMA — Living Grid Prototype</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #05050a;
+      --panel: #0b0c14;
+      --text: #f6f7fb;
+      --muted: #9ba0ad;
+      --border: rgba(255,255,255,.09);
+      --button: rgba(255,255,255,.08);
+      --button-hover: rgba(255,255,255,.14);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { display: flex; justify-content: center; padding: max(18px, env(safe-area-inset-top)) 14px max(26px, env(safe-area-inset-bottom)); }
+
+    .app { width: min(760px, 100%); }
+    .stage { background: radial-gradient(circle at 50% 0%, rgba(95,54,160,.12), transparent 38%), var(--panel); border: 1px solid var(--border); border-radius: 26px; padding: 18px; overflow: hidden; }
+    .intro { text-align: center; margin-bottom: 16px; }
+    .intro h1 { margin: 0; font-size: clamp(1.45rem, 5vw, 2.4rem); letter-spacing: .18em; font-weight: 700; }
+    .intro p { margin: 8px 0 0; color: var(--muted); font-size: .95rem; }
+
+    .grid { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; width: 100%; margin: 0 auto; }
+    .cell { position: relative; aspect-ratio: 1 / 1; border: 1px solid rgba(255,255,255,.07); border-radius: 12px; background: rgba(255,255,255,.025); overflow: hidden; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: transform .18s ease, border-color .25s ease, background .25s ease; cursor: pointer; }
+    .cell::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, hsla(var(--h), 95%, 73%, var(--a)), hsla(var(--h), 92%, 50%, calc(var(--a) * .72)) 36%, transparent 74%); opacity: 1; transition: opacity 2.8s ease; }
+    .cell::after { content: ""; position: absolute; inset: 18%; border-radius: 999px; border: 1px solid hsla(var(--h), 100%, 85%, calc(var(--a) * .8)); transform: scale(calc(.5 + var(--pulse) * .7)); opacity: calc(var(--a) * .7); transition: transform 1.8s cubic-bezier(.22,.61,.36,1), opacity 2.2s ease; }
+    .cell.active { transform: scale(.95); border-color: hsla(var(--h), 90%, 70%, .9); background: rgba(255,255,255,.05); }
+    .cell:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+    .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 16px; }
+    button.control { appearance: none; border: 1px solid var(--border); background: var(--button); color: var(--text); min-height: 44px; border-radius: 999px; padding: 0 18px; font: inherit; font-weight: 650; cursor: pointer; }
+    button.control:hover { background: var(--button-hover); }
+    .status { min-height: 1.4em; margin-top: 11px; text-align: center; color: var(--muted); font-size: .87rem; }
+    .breath { animation: breathe 7s ease-in-out infinite; }
+    @keyframes breathe { 0%,100% { filter: brightness(.93); } 50% { filter: brightness(1.08); } }
+
+    @media (max-width: 480px) {
+      body { padding-left: 8px; padding-right: 8px; }
+      .stage { padding: 11px; border-radius: 20px; }
+      .grid { gap: 4px; }
+      .cell { border-radius: 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .breath { animation: none; }
+      .cell, .cell::after { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="stage breath">
+      <header class="intro">
+        <h1>CHROMA</h1>
+        <p>Touch the organism. Each cell remembers, sings, and answers differently.</p>
+      </header>
+
+      <div id="grid" class="grid" aria-label="8 by 8 interactive sound grid"></div>
+
+      <div class="controls">
+        <button id="soundBtn" class="control" type="button">Enable sound</button>
+        <button id="clearBtn" class="control" type="button">Let it sleep</button>
+      </div>
+      <div id="status" class="status" aria-live="polite">Sound begins after you enable it. Haptics are used when the browser supports them.</div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const grid = document.getElementById('grid');
+      const status = document.getElementById('status');
+      const soundBtn = document.getElementById('soundBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const cells = [];
+      const scale = [0, 2, 5, 7, 9, 12, 14];
+
+      let ctx = null;
+      let master = null;
+      let soundOn = false;
+
+      const rand = (a, b) => a + Math.random() * (b - a);
+      const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+      function initAudio() {
+        if (ctx) return true;
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return false;
+          ctx = new AudioCtx();
+          master = ctx.createGain();
+          master.gain.value = 0.18;
+          master.connect(ctx.destination);
+          return true;
+        } catch {
+          return false;
+        }
+      }
+
+      function playTone(index, intensity) {
+        if (!soundOn || !ctx || !master) return;
+
+        const now = ctx.currentTime;
+        const row = Math.floor(index / 8);
+        const col = index % 8;
+        const midi = 40 + scale[(row + col) % scale.length] + 12 * ((index % 3) === 0 ? 1 : 0);
+        const freq = 440 * Math.pow(2, (midi - 69) / 12);
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+
+        osc.type = ['sine', 'triangle', 'sawtooth'][index % 3];
+        osc.frequency.setValueAtTime(freq * rand(.985, 1.015), now);
+        osc.detune.setValueAtTime(rand(-9, 9), now);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(rand(420, 1800), now);
+        filter.Q.value = rand(.4, 4.8);
+
+        gain.gain.setValueAtTime(.0001, now);
+        gain.gain.exponentialRampToValueAtTime(.12 * intensity + .025, now + rand(.03, .12));
+        gain.gain.exponentialRampToValueAtTime(.0001, now + rand(1.4, 3.8));
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(master);
+        osc.start(now);
+        osc.stop(now + 4.2);
+
+        if (index % 5 === 0) {
+          const sub = ctx.createOscillator();
+          const subGain = ctx.createGain();
+          sub.type = 'sine';
+          sub.frequency.value = freq / 2;
+          subGain.gain.setValueAtTime(.0001, now + .18);
+          subGain.gain.exponentialRampToValueAtTime(.035, now + .45);
+          subGain.gain.exponentialRampToValueAtTime(.0001, now + 2.8);
+          sub.connect(subGain);
+          subGain.connect(master);
+          sub.start(now + .18);
+          sub.stop(now + 3);
+        }
+      }
+
+      function haptic(index) {
+        if (!('vibrate' in navigator)) return false;
+
+        const patterns = [
+          [110, 260, 180],
+          [70, 180, 70, 420, 220],
+          [180, 340, 80],
+          [55, 120, 55, 120, 260],
+          [240, 520, 120]
+        ];
+
+        try {
+          return navigator.vibrate(patterns[index % patterns.length]);
+        } catch {
+          return false;
+        }
+      }
+
+      function wake(cell, index) {
+        const previous = parseFloat(cell.dataset.energy || '0');
+        const energy = clamp(previous + .48, 0, 1);
+        const hue = (index * 19 + Math.floor(rand(-18, 18)) + Date.now() / 80) % 360;
+
+        cell.dataset.energy = String(energy);
+        cell.style.setProperty('--h', hue.toFixed(1));
+        cell.style.setProperty('--a', String(.25 + .75 * energy));
+        cell.style.setProperty('--pulse', String(rand(.75, 1.35)));
+        cell.classList.add('active');
+        setTimeout(() => cell.classList.remove('active'), 220);
+
+        playTone(index, energy);
+        const didHaptic = haptic(index);
+        status.textContent = didHaptic
+          ? 'It answered in light, sound, and touch.'
+          : 'It answered in light and sound. Haptics are unavailable in this browser.';
+
+        const neighbors = [index - 1, index + 1, index - 8, index + 8]
+          .filter(i => i >= 0 && i < 64 && Math.abs((i % 8) - (index % 8)) <= 1);
+
+        neighbors.forEach((neighborIndex, k) => {
+          setTimeout(() => {
+            const neighbor = cells[neighborIndex];
+            const neighborEnergy = clamp(parseFloat(neighbor.dataset.energy || '0') + .10, 0, .55);
+            neighbor.dataset.energy = String(neighborEnergy);
+            neighbor.style.setProperty('--h', String((hue + (k + 1) * 13) % 360));
+            neighbor.style.setProperty('--a', String(neighborEnergy));
+            neighbor.style.setProperty('--pulse', String(.55 + neighborEnergy));
+          }, 160 + k * 110);
+        });
+      }
+
+      for (let i = 0; i < 64; i++) {
+        const cell = document.createElement('button');
+        cell.type = 'button';
+        cell.className = 'cell';
+        cell.setAttribute('aria-label', `Cell ${Math.floor(i / 8) + 1}, ${i % 8 + 1}`);
+        cell.dataset.energy = '0';
+        cell.style.setProperty('--h', String((i * 7) % 360));
+        cell.style.setProperty('--a', '0');
+        cell.style.setProperty('--pulse', '.4');
+        cell.addEventListener('pointerdown', () => wake(cell, i));
+        grid.appendChild(cell);
+        cells.push(cell);
+      }
+
+      soundBtn.addEventListener('click', async () => {
+        if (!initAudio()) {
+          status.textContent = 'This browser does not expose Web Audio here.';
+          soundBtn.disabled = true;
+          return;
+        }
+
+        try {
+          if (ctx.state === 'suspended') await ctx.resume();
+        } catch {}
+
+        soundOn = !soundOn;
+        soundBtn.textContent = soundOn ? 'Sound on' : 'Enable sound';
+        status.textContent = soundOn
+          ? 'Sound awakened. Touch slowly.'
+          : 'Sound sleeping. The light still responds.';
+      });
+
+      clearBtn.addEventListener('click', () => {
+        cells.forEach(cell => {
+          cell.dataset.energy = '0';
+          cell.style.setProperty('--a', '0');
+          cell.style.setProperty('--pulse', '.4');
+        });
+
+        if ('vibrate' in navigator) {
+          try { navigator.vibrate(0); } catch {}
+        }
+
+        status.textContent = 'The grid is sleeping again.';
+      });
+
+      let last = performance.now();
+      function decay(now) {
+        if (now - last > 180) {
+          last = now;
+          cells.forEach(cell => {
+            let energy = parseFloat(cell.dataset.energy || '0');
+            if (energy > 0) {
+              energy = Math.max(0, energy - .006);
+              cell.dataset.energy = String(energy);
+              cell.style.setProperty('--a', String(energy));
+            }
+          });
+        }
+        requestAnimationFrame(decay);
+      }
+      requestAnimationFrame(decay);
+    })();
+  </script>
+</body>
+</html>
