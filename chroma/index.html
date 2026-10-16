@@ -1,268 +1,48 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#05050a" />
-  <title>CHROMA — Living Grid Prototype</title>
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #05050a;
-      --panel: #0b0c14;
-      --text: #f6f7fb;
-      --muted: #9ba0ad;
-      --border: rgba(255,255,255,.09);
-      --button: rgba(255,255,255,.08);
-      --button-hover: rgba(255,255,255,.14);
-    }
-
-    * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    body { display: flex; justify-content: center; padding: max(18px, env(safe-area-inset-top)) 14px max(26px, env(safe-area-inset-bottom)); }
-
-    .app { width: min(760px, 100%); }
-    .stage { background: radial-gradient(circle at 50% 0%, rgba(95,54,160,.12), transparent 38%), var(--panel); border: 1px solid var(--border); border-radius: 26px; padding: 18px; overflow: hidden; }
-    .intro { text-align: center; margin-bottom: 16px; }
-    .intro h1 { margin: 0; font-size: clamp(1.45rem, 5vw, 2.4rem); letter-spacing: .18em; font-weight: 700; }
-    .intro p { margin: 8px 0 0; color: var(--muted); font-size: .95rem; }
-
-    .grid { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; width: 100%; margin: 0 auto; }
-    .cell { position: relative; aspect-ratio: 1 / 1; border: 1px solid rgba(255,255,255,.07); border-radius: 12px; background: rgba(255,255,255,.025); overflow: hidden; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: transform .18s ease, border-color .25s ease, background .25s ease; cursor: pointer; }
-    .cell::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, hsla(var(--h), 95%, 73%, var(--a)), hsla(var(--h), 92%, 50%, calc(var(--a) * .72)) 36%, transparent 74%); opacity: 1; transition: opacity 2.8s ease; }
-    .cell::after { content: ""; position: absolute; inset: 18%; border-radius: 999px; border: 1px solid hsla(var(--h), 100%, 85%, calc(var(--a) * .8)); transform: scale(calc(.5 + var(--pulse) * .7)); opacity: calc(var(--a) * .7); transition: transform 1.8s cubic-bezier(.22,.61,.36,1), opacity 2.2s ease; }
-    .cell.active { transform: scale(.95); border-color: hsla(var(--h), 90%, 70%, .9); background: rgba(255,255,255,.05); }
-    .cell:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-
-    .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 16px; }
-    button.control { appearance: none; border: 1px solid var(--border); background: var(--button); color: var(--text); min-height: 44px; border-radius: 999px; padding: 0 18px; font: inherit; font-weight: 650; cursor: pointer; }
-    button.control:hover { background: var(--button-hover); }
-    .status { min-height: 1.4em; margin-top: 11px; text-align: center; color: var(--muted); font-size: .87rem; }
-    .breath { animation: breathe 7s ease-in-out infinite; }
-    @keyframes breathe { 0%,100% { filter: brightness(.93); } 50% { filter: brightness(1.08); } }
-
-    @media (max-width: 480px) {
-      body { padding-left: 8px; padding-right: 8px; }
-      .stage { padding: 11px; border-radius: 20px; }
-      .grid { gap: 4px; }
-      .cell { border-radius: 8px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .breath { animation: none; }
-      .cell, .cell::after { transition: none; }
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#05050a" />
+<title>CHROMA — Living Dungeon</title>
+<style>
+:root{color-scheme:dark;--bg:#05050a;--panel:#0b0c14;--text:#f6f7fb;--muted:#9ba0ad;--border:rgba(255,255,255,.09);--button:rgba(255,255,255,.08);--button-hover:rgba(255,255,255,.14)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{display:flex;justify-content:center;padding:max(16px,env(safe-area-inset-top)) 10px max(24px,env(safe-area-inset-bottom))}.app{width:min(760px,100%)}.stage{background:radial-gradient(circle at 50% 0%,rgba(95,54,160,.14),transparent 40%),var(--panel);border:1px solid var(--border);border-radius:26px;padding:16px;overflow:hidden}.intro{text-align:center;margin-bottom:12px}.intro h1{margin:0;font-size:clamp(1.35rem,5vw,2.2rem);letter-spacing:.16em}.intro p{margin:7px 0 0;color:var(--muted);font-size:.92rem}.hud{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.hud div{border:1px solid var(--border);border-radius:14px;padding:9px 8px;text-align:center;background:rgba(255,255,255,.025)}.hud strong{display:block;font-size:1rem}.hud span{display:block;color:var(--muted);font-size:.72rem;margin-top:2px}.grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;width:100%;margin:0 auto}.cell{position:relative;aspect-ratio:1/1;border:1px solid rgba(255,255,255,.06);border-radius:10px;background:rgba(255,255,255,.018);overflow:hidden;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .16s ease,border-color .22s ease,background .25s ease,opacity .35s ease}.cell.hidden{background:#050509;border-color:rgba(255,255,255,.025)}.cell.visited{background:rgba(255,255,255,.035)}.cell.current{border-color:rgba(255,255,255,.8);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}.cell::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,hsla(var(--h),95%,72%,var(--a)),hsla(var(--h),90%,48%,calc(var(--a)*.7)) 40%,transparent 76%)}.glyph{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(.95rem,4vw,1.5rem);z-index:2;text-shadow:0 0 14px rgba(255,255,255,.25)}.controls{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-top:14px}button.control{appearance:none;border:1px solid var(--border);background:var(--button);color:var(--text);min-height:44px;border-radius:999px;padding:0 16px;font:inherit;font-weight:650}button.control:hover{background:var(--button-hover)}.pad{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,48px);gap:6px;justify-content:center;margin-top:14px}.pad button{border:1px solid var(--border);background:var(--button);color:var(--text);border-radius:14px;font-size:1.2rem}.pad .blank{visibility:hidden}.status{min-height:2.8em;margin-top:10px;text-align:center;color:var(--muted);font-size:.86rem;line-height:1.35}.legend{text-align:center;color:var(--muted);font-size:.75rem;margin-top:8px}.breath{animation:breathe 7s ease-in-out infinite}@keyframes breathe{0%,100%{filter:brightness(.94)}50%{filter:brightness(1.06)}}@media(max-width:480px){.stage{padding:10px;border-radius:20px}.grid{gap:4px}.cell{border-radius:8px}.hud{gap:5px}.hud div{padding:7px 5px}}@media(prefers-reduced-motion:reduce){.breath{animation:none}.cell{transition:none}}
+</style>
 </head>
 <body>
-  <main class="app">
-    <section class="stage breath">
-      <header class="intro">
-        <h1>CHROMA</h1>
-        <p>Touch the organism. Each cell remembers, sings, and answers differently.</p>
-      </header>
-
-      <div id="grid" class="grid" aria-label="8 by 8 interactive sound grid"></div>
-
-      <div class="controls">
-        <button id="soundBtn" class="control" type="button">Enable sound</button>
-        <button id="clearBtn" class="control" type="button">Let it sleep</button>
-      </div>
-      <div id="status" class="status" aria-live="polite">Sound begins after you enable it. Haptics are used when the browser supports them.</div>
-    </section>
-  </main>
-
-  <script>
-    (() => {
-      const grid = document.getElementById('grid');
-      const status = document.getElementById('status');
-      const soundBtn = document.getElementById('soundBtn');
-      const clearBtn = document.getElementById('clearBtn');
-      const cells = [];
-      const scale = [0, 2, 5, 7, 9, 12, 14];
-
-      let ctx = null;
-      let master = null;
-      let soundOn = false;
-
-      const rand = (a, b) => a + Math.random() * (b - a);
-      const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-
-      function initAudio() {
-        if (ctx) return true;
-        try {
-          const AudioCtx = window.AudioContext || window.webkitAudioContext;
-          if (!AudioCtx) return false;
-          ctx = new AudioCtx();
-          master = ctx.createGain();
-          master.gain.value = 0.18;
-          master.connect(ctx.destination);
-          return true;
-        } catch {
-          return false;
-        }
-      }
-
-      function playTone(index, intensity) {
-        if (!soundOn || !ctx || !master) return;
-
-        const now = ctx.currentTime;
-        const row = Math.floor(index / 8);
-        const col = index % 8;
-        const midi = 40 + scale[(row + col) % scale.length] + 12 * ((index % 3) === 0 ? 1 : 0);
-        const freq = 440 * Math.pow(2, (midi - 69) / 12);
-
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        const filter = ctx.createBiquadFilter();
-
-        osc.type = ['sine', 'triangle', 'sawtooth'][index % 3];
-        osc.frequency.setValueAtTime(freq * rand(.985, 1.015), now);
-        osc.detune.setValueAtTime(rand(-9, 9), now);
-
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(rand(420, 1800), now);
-        filter.Q.value = rand(.4, 4.8);
-
-        gain.gain.setValueAtTime(.0001, now);
-        gain.gain.exponentialRampToValueAtTime(.12 * intensity + .025, now + rand(.03, .12));
-        gain.gain.exponentialRampToValueAtTime(.0001, now + rand(1.4, 3.8));
-
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(master);
-        osc.start(now);
-        osc.stop(now + 4.2);
-
-        if (index % 5 === 0) {
-          const sub = ctx.createOscillator();
-          const subGain = ctx.createGain();
-          sub.type = 'sine';
-          sub.frequency.value = freq / 2;
-          subGain.gain.setValueAtTime(.0001, now + .18);
-          subGain.gain.exponentialRampToValueAtTime(.035, now + .45);
-          subGain.gain.exponentialRampToValueAtTime(.0001, now + 2.8);
-          sub.connect(subGain);
-          subGain.connect(master);
-          sub.start(now + .18);
-          sub.stop(now + 3);
-        }
-      }
-
-      function haptic(index) {
-        if (!('vibrate' in navigator)) return false;
-
-        const patterns = [
-          [110, 260, 180],
-          [70, 180, 70, 420, 220],
-          [180, 340, 80],
-          [55, 120, 55, 120, 260],
-          [240, 520, 120]
-        ];
-
-        try {
-          return navigator.vibrate(patterns[index % patterns.length]);
-        } catch {
-          return false;
-        }
-      }
-
-      function wake(cell, index) {
-        const previous = parseFloat(cell.dataset.energy || '0');
-        const energy = clamp(previous + .48, 0, 1);
-        const hue = (index * 19 + Math.floor(rand(-18, 18)) + Date.now() / 80) % 360;
-
-        cell.dataset.energy = String(energy);
-        cell.style.setProperty('--h', hue.toFixed(1));
-        cell.style.setProperty('--a', String(.25 + .75 * energy));
-        cell.style.setProperty('--pulse', String(rand(.75, 1.35)));
-        cell.classList.add('active');
-        setTimeout(() => cell.classList.remove('active'), 220);
-
-        playTone(index, energy);
-        const didHaptic = haptic(index);
-        status.textContent = didHaptic
-          ? 'It answered in light, sound, and touch.'
-          : 'It answered in light and sound. Haptics are unavailable in this browser.';
-
-        const neighbors = [index - 1, index + 1, index - 8, index + 8]
-          .filter(i => i >= 0 && i < 64 && Math.abs((i % 8) - (index % 8)) <= 1);
-
-        neighbors.forEach((neighborIndex, k) => {
-          setTimeout(() => {
-            const neighbor = cells[neighborIndex];
-            const neighborEnergy = clamp(parseFloat(neighbor.dataset.energy || '0') + .10, 0, .55);
-            neighbor.dataset.energy = String(neighborEnergy);
-            neighbor.style.setProperty('--h', String((hue + (k + 1) * 13) % 360));
-            neighbor.style.setProperty('--a', String(neighborEnergy));
-            neighbor.style.setProperty('--pulse', String(.55 + neighborEnergy));
-          }, 160 + k * 110);
-        });
-      }
-
-      for (let i = 0; i < 64; i++) {
-        const cell = document.createElement('button');
-        cell.type = 'button';
-        cell.className = 'cell';
-        cell.setAttribute('aria-label', `Cell ${Math.floor(i / 8) + 1}, ${i % 8 + 1}`);
-        cell.dataset.energy = '0';
-        cell.style.setProperty('--h', String((i * 7) % 360));
-        cell.style.setProperty('--a', '0');
-        cell.style.setProperty('--pulse', '.4');
-        cell.addEventListener('pointerdown', () => wake(cell, i));
-        grid.appendChild(cell);
-        cells.push(cell);
-      }
-
-      soundBtn.addEventListener('click', async () => {
-        if (!initAudio()) {
-          status.textContent = 'This browser does not expose Web Audio here.';
-          soundBtn.disabled = true;
-          return;
-        }
-
-        try {
-          if (ctx.state === 'suspended') await ctx.resume();
-        } catch {}
-
-        soundOn = !soundOn;
-        soundBtn.textContent = soundOn ? 'Sound on' : 'Enable sound';
-        status.textContent = soundOn
-          ? 'Sound awakened. Touch slowly.'
-          : 'Sound sleeping. The light still responds.';
-      });
-
-      clearBtn.addEventListener('click', () => {
-        cells.forEach(cell => {
-          cell.dataset.energy = '0';
-          cell.style.setProperty('--a', '0');
-          cell.style.setProperty('--pulse', '.4');
-        });
-
-        if ('vibrate' in navigator) {
-          try { navigator.vibrate(0); } catch {}
-        }
-
-        status.textContent = 'The grid is sleeping again.';
-      });
-
-      let last = performance.now();
-      function decay(now) {
-        if (now - last > 180) {
-          last = now;
-          cells.forEach(cell => {
-            let energy = parseFloat(cell.dataset.energy || '0');
-            if (energy > 0) {
-              energy = Math.max(0, energy - .006);
-              cell.dataset.energy = String(energy);
-              cell.style.setProperty('--a', String(energy));
-            }
-          });
-        }
-        requestAnimationFrame(decay);
-      }
-      requestAnimationFrame(decay);
-    })();
-  </script>
+<main class="app"><section class="stage breath"><header class="intro"><h1>CHROMA</h1><p>A living dungeon. Move slowly. Listen to what is near.</p></header>
+<div class="hud"><div><strong id="floorVal">1</strong><span>FLOOR</span></div><div><strong id="hpVal">10 / 10</strong><span>VITALITY</span></div><div><strong id="relicVal">0</strong><span>RELICS</span></div></div>
+<div id="grid" class="grid" aria-label="8 by 8 living dungeon"></div>
+<div class="pad" aria-label="movement controls"><button class="blank" tabindex="-1"></button><button id="upBtn" type="button">↑</button><button class="blank" tabindex="-1"></button><button id="leftBtn" type="button">←</button><button id="senseBtn" type="button">◉</button><button id="rightBtn" type="button">→</button><button class="blank" tabindex="-1"></button><button id="downBtn" type="button">↓</button><button class="blank" tabindex="-1"></button></div>
+<div class="controls"><button id="soundBtn" class="control" type="button">Enable sound</button><button id="newBtn" class="control" type="button">New run</button></div>
+<div id="status" class="status" aria-live="polite">You wake in the dark. The dungeon is breathing.</div><div class="legend">◉ Sense nearby presences · Find the white gate to descend</div>
+</section></main>
+<script>
+(()=>{
+const SIZE=8,TOTAL=64,grid=document.getElementById('grid'),status=document.getElementById('status'),hpVal=document.getElementById('hpVal'),floorVal=document.getElementById('floorVal'),relicVal=document.getElementById('relicVal'),soundBtn=document.getElementById('soundBtn');
+let cells=[],map=[],player=0,hp=10,maxHp=10,relics=0,floor=1,ctx=null,master=null,soundOn=false,dead=false;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=n=>Math.floor(Math.random()*n),dist=(a,b)=>Math.abs(Math.floor(a/SIZE)-Math.floor(b/SIZE))+Math.abs((a%SIZE)-(b%SIZE));
+function initAudio(){if(ctx)return true;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return false;ctx=new A();master=ctx.createGain();master.gain.value=.16;master.connect(ctx.destination);return true}catch{return false}}
+function tone(kind,intensity=1){if(!soundOn||!ctx||!master)return;const now=ctx.currentTime,osc=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();const cfg={move:[196,'sine',900],treasure:[329.6,'triangle',1800],heal:[261.6,'sine',1300],monster:[82.4,'sawtooth',500],exit:[440,'sine',2200],sense:[146.8,'triangle',800],hurt:[110,'square',450]}[kind]||[220,'sine',1000];osc.type=cfg[1];osc.frequency.value=cfg[0];f.type='lowpass';f.frequency.value=cfg[2];g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.05*intensity+.015,now+.04);g.gain.exponentialRampToValueAtTime(.0001,now+1.7);osc.connect(f);f.connect(g);g.connect(master);osc.start();osc.stop(now+1.9)}
+function vibrate(p){try{if('vibrate'in navigator)return navigator.vibrate(p)}catch{}return false}
+function blankMap(){map=Array.from({length:TOTAL},()=>({type:'empty',seen:false,cleared:false,hue:rand(360)}));}
+function place(type,count,avoid=[]){for(let n=0;n<count;n++){let i;do{i=rand(TOTAL)}while(avoid.includes(i)||i===player||map[i].type!=='empty');map[i].type=type;avoid.push(i)}return avoid}
+function makeFloor(){blankMap();player=rand(TOTAL);let used=[player];place('treasure',4,used);place('heal',3,used);place('monster',5+floor,used);place('exit',1,used);reveal(player);dead=false;status.textContent='You wake in the dark. The dungeon is breathing.';render()}
+function reveal(i){map[i].seen=true;[i-1,i+1,i-SIZE,i+SIZE].forEach(n=>{if(n>=0&&n<TOTAL&&dist(i,n)===1)map[n].seen=true})}
+function glyph(tile,i){if(i===player)return'◆';if(!tile.seen)return'';if(tile.cleared)return'';return tile.type==='treasure'?'✦':tile.type==='heal'?'✧':tile.type==='monster'?'◉':tile.type==='exit'?'□':''}
+function hueFor(tile,i){if(i===player)return 190;if(!tile.seen)return 260;if(tile.type==='treasure')return 38;if(tile.type==='heal')return 145;if(tile.type==='monster')return 350;if(tile.type==='exit')return 0;return tile.hue}
+function render(){hpVal.textContent=`${hp} / ${maxHp}`;floorVal.textContent=floor;relicVal.textContent=relics;cells.forEach((c,i)=>{const t=map[i];c.className='cell '+(t.seen?'visited':'hidden')+(i===player?' current':'');c.style.setProperty('--h',hueFor(t,i));c.style.setProperty('--a',i===player?'.92':t.seen?'.2':'0');c.querySelector('.glyph').textContent=glyph(t,i)})}
+function enterTile(){const t=map[player];if(t.cleared||t.type==='empty'){tone('move',.7);status.textContent='The floor hums beneath you.';return}if(t.type==='treasure'){relics++;t.cleared=true;tone('treasure',1.2);vibrate([90,220,140]);status.textContent='A warm relic unfolds into your hand.'}else if(t.type==='heal'){hp=Math.min(maxHp,hp+3);t.cleared=true;tone('heal',1);vibrate([180,420,80]);status.textContent='A cool pulse moves through your body.'}else if(t.type==='monster'){const dmg=1+rand(3);hp-=dmg;t.cleared=true;tone('monster',1.3);setTimeout(()=>tone('hurt',1),120);vibrate([220,160,90,320,180]);status.textContent=`Something in the dark touches back. -${dmg} vitality.`;if(hp<=0){hp=0;dead=true;status.textContent='YOU DISSOLVE. The dungeon remembers you.'}}else if(t.type==='exit'){tone('exit',1.4);vibrate([280,450,280,450,500]);floor++;hp=Math.min(maxHp,hp+2);status.textContent='The white gate opens. You descend.';setTimeout(makeFloor,650)} }
+function move(dx,dy){if(dead)return;const x=player%SIZE,y=Math.floor(player/SIZE),nx=x+dx,ny=y+dy;if(nx<0||nx>=SIZE||ny<0||ny>=SIZE){tone('hurt',.4);vibrate([40]);status.textContent='The edge pushes back.';return}player=ny*SIZE+nx;reveal(player);enterTile();render()}
+function sense(){if(dead)return;tone('sense',.8);const targets=map.map((t,i)=>({t,i,d:dist(player,i)})).filter(o=>!o.t.cleared&&o.i!==player&&['monster','treasure','exit','heal'].includes(o.t.type)).sort((a,b)=>a.d-b.d);if(!targets.length){status.textContent='Only silence answers.';return}const n=targets[0],near=n.d<=1,mid=n.d<=3;const patterns=n.t.type==='monster'?[near?300:mid?180:100,mid?220:420,near?220:100]:n.t.type==='exit'?[180,500,180]:n.t.type==='treasure'?[70,220,70]:[130,360,90];vibrate(patterns);const words={monster:'Something hungry',treasure:'Something warm',exit:'A white frequency',heal:'Something gentle'};status.textContent=`${words[n.t.type]} answers from ${n.d} step${n.d===1?'':'s'} away.`}
+for(let i=0;i<TOTAL;i++){const c=document.createElement('div');c.className='cell hidden';c.style.setProperty('--h','260');c.style.setProperty('--a','0');const g=document.createElement('span');g.className='glyph';c.appendChild(g);grid.appendChild(c);cells.push(c)}
+document.getElementById('upBtn').addEventListener('click',()=>move(0,-1));document.getElementById('downBtn').addEventListener('click',()=>move(0,1));document.getElementById('leftBtn').addEventListener('click',()=>move(-1,0));document.getElementById('rightBtn').addEventListener('click',()=>move(1,0));document.getElementById('senseBtn').addEventListener('click',sense);
+document.getElementById('newBtn').addEventListener('click',()=>{hp=maxHp;relics=0;floor=1;makeFloor()});
+soundBtn.addEventListener('click',async()=>{if(!initAudio()){status.textContent='Web Audio is unavailable here.';return}try{if(ctx.state==='suspended')await ctx.resume()}catch{}soundOn=!soundOn;soundBtn.textContent=soundOn?'Sound on':'Enable sound';status.textContent=soundOn?'The dungeon has a voice now.':'The dungeon falls quiet.'});
+window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();if(e.key==='ArrowUp')move(0,-1);if(e.key==='ArrowDown')move(0,1);if(e.key==='ArrowLeft')move(-1,0);if(e.key==='ArrowRight')move(1,0);if(e.key===' ')sense()});
+makeFloor();
+})();
+</script>
 </body>
 </html>
