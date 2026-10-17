@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <title>Parsec Flux — Movements</title>
 <style>
-:root{color-scheme:dark}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;background:#020504;color:#d7ffe6;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-height:100%}body{display:flex;justify-content:center}main{width:100%;max-width:720px;min-height:100dvh;padding:16px;display:flex;flex-direction:column;gap:12px}.eyebrow{font-size:12px;letter-spacing:.18em;color:#6aa77e}.title{font-size:19px;letter-spacing:.14em;margin:0}.sub{font-size:13px;line-height:1.45;color:#7ea98d;margin:0}.stage{position:relative;min-height:460px;border:1px solid #1b3b28;border-radius:20px;background:radial-gradient(circle at 50% 52%,#07140d 0,#020504 62%);overflow:hidden;touch-action:manipulation}.stars{position:absolute;inset:0;background-image:radial-gradient(#4b7d5c 1px,transparent 1px);background-size:38px 38px;opacity:.18}.hud{position:absolute;inset:14px 14px auto 14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;z-index:3}.hud div{text-align:center;font-size:10px;letter-spacing:.1em;color:#6aa77e}.hud strong{display:block;margin-top:3px;font-size:17px;color:#caffd9}.landerWrap{position:absolute;left:50%;top:54%;width:190px;height:180px;transform:translate(-50%,-50%);transition:transform .12s ease-out;z-index:2}.landerWrap.jump{transform:translate(-50%,-68%)}svg{width:100%;height:100%;overflow:visible}.vec{fill:none;stroke:#b7ffd0;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px rgba(183,255,208,.35))}.thruster{opacity:0}.jump .thruster{opacity:1}.prompt{position:absolute;left:0;right:0;bottom:34px;text-align:center;z-index:3}.prompt b{display:block;font-size:26px;letter-spacing:.08em}.prompt span{display:block;margin-top:5px;color:#6aa77e;font-size:12px}.status{min-height:22px;font-size:13px;color:#91c6a1}.progress{height:4px;background:#0c1b12;border-radius:99px;overflow:hidden}.progress>i{display:block;height:100%;width:0;background:#8ef7ad;transition:width .2s}.footer{font-size:11px;color:#547261;text-align:center}.flash{animation:flash .26s ease-out}@keyframes flash{0%{background:#173823}100%{background:#020504}}@media(prefers-reduced-motion:reduce){.landerWrap{transition:none}.flash{animation:none}}
+:root{color-scheme:dark}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;background:#020504;color:#d7ffe6;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-height:100%}body{display:flex;justify-content:center}main{width:100%;max-width:720px;min-height:100dvh;padding:16px;display:flex;flex-direction:column;gap:12px}.eyebrow{font-size:12px;letter-spacing:.18em;color:#6aa77e}.title{font-size:19px;letter-spacing:.14em;margin:0}.sub{font-size:13px;line-height:1.45;color:#7ea98d;margin:0}.stage{position:relative;min-height:460px;border:1px solid #1b3b28;border-radius:20px;background:radial-gradient(circle at 50% 52%,#07140d 0,#020504 62%);overflow:hidden;touch-action:manipulation}.stars{position:absolute;inset:0;background-image:radial-gradient(#4b7d5c 1px,transparent 1px);background-size:38px 38px;opacity:.18}.hud{position:absolute;inset:14px 14px auto 14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;z-index:3}.hud div{text-align:center;font-size:10px;letter-spacing:.1em;color:#6aa77e}.hud strong{display:block;margin-top:3px;font-size:17px;color:#caffd9}.landerWrap{position:absolute;left:50%;top:54%;width:190px;height:180px;transform:translate(-50%,-50%);transition:transform .12s ease-out;z-index:2}.landerWrap.jump{transform:translate(-50%,-68%)}svg{width:100%;height:100%;overflow:visible}.vec{fill:none;stroke:#b7ffd0;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px rgba(183,255,208,.35))}.thruster{opacity:0}.jump .thruster{opacity:1}.prompt{position:absolute;left:0;right:0;bottom:34px;text-align:center;z-index:3}.prompt b{display:block;font-size:26px;letter-spacing:.08em}.prompt span{display:block;margin-top:5px;color:#6aa77e;font-size:12px}.status{min-height:22px;font-size:13px;color:#91c6a1}.progress{height:4px;background:#0c1b12;border-radius:99px;overflow:hidden}.progress>i{display:block;height:100%;width:0;background:#8ef7ad;transition:width .2s}.volume{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid #173421;border-radius:14px;background:#050b07}.volume label{font-size:11px;letter-spacing:.12em;color:#79a989}.volume output{min-width:42px;text-align:right;font-size:12px;color:#caffd9}.volume input{width:100%;accent-color:#8ef7ad;touch-action:manipulation}.footer{font-size:11px;color:#547261;text-align:center}.flash{animation:flash .26s ease-out}@keyframes flash{0%{background:#173823}100%{background:#020504}}@media(prefers-reduced-motion:reduce){.landerWrap{transition:none}.flash{animation:none}}
 </style>
 </head>
 <body>
@@ -33,22 +33,41 @@
     <div class="prompt"><b id="big">START</b><span id="small">The whole screen is the button</span></div>
   </section>
   <div class="progress"><i id="progress"></i></div>
+  <div class="volume">
+    <label for="volume">VOLUME</label>
+    <input id="volume" type="range" min="0" max="150" step="1" value="100" aria-label="Game volume">
+    <output id="volumeValue" for="volume">100%</output>
+  </div>
   <div id="status" class="status" aria-live="polite">Tap START to enter Movement I.</div>
   <div class="footer">The harmony begins on C and blooms into a luminous C Lydian major sound.</div>
 </main>
 <script>
 (() => {
-  const stage=document.getElementById('stage'),lander=document.getElementById('lander'),big=document.getElementById('big'),small=document.getElementById('small'),status=document.getElementById('status'),scoreEl=document.getElementById('score'),livesEl=document.getElementById('lives'),movementEl=document.getElementById('movement'),fluxEl=document.getElementById('flux'),progress=document.getElementById('progress');
-  let ctx,master,hazardBus,hazardDelay,hazardFeedback,running=false,paused=false,score=0,lives=3,movement=1,movementJumps=0,hazards=[],timers=[],ambientNodes=[],nextId=1,startedAt=0;
+  const stage=document.getElementById('stage'),lander=document.getElementById('lander'),big=document.getElementById('big'),small=document.getElementById('small'),status=document.getElementById('status'),scoreEl=document.getElementById('score'),livesEl=document.getElementById('lives'),movementEl=document.getElementById('movement'),fluxEl=document.getElementById('flux'),progress=document.getElementById('progress'),volumeEl=document.getElementById('volume'),volumeValue=document.getElementById('volumeValue');
+  let ctx,master,limiter,hazardBus,hazardDelay,hazardFeedback,running=false,paused=false,score=0,lives=3,movement=1,movementJumps=0,hazards=[],timers=[],ambientNodes=[],nextId=1,startedAt=0;
   const roman=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
   const names=['Origin','Bloom','Drift','Mirage','Aurora','Threshold','Spiral','Radiance','Echo','Infinite'];
   const harmony=[65.4064,97.9989,164.8138,246.9417,293.6648,369.9944,440.0000,523.2511,659.2551,783.9909];
   const label=n=>roman[n-1]||String(n);
+  let userVolume=Math.max(0,Math.min(150,Number(localStorage.getItem('parsecFluxVolume')||100)));
+  volumeEl.value=String(userVolume);volumeValue.textContent=Math.round(userVolume)+'%';
+
+  function applyVolume(){
+    userVolume=Math.max(0,Math.min(150,Number(volumeEl.value)));
+    volumeValue.textContent=Math.round(userVolume)+'%';
+    localStorage.setItem('parsecFluxVolume',String(userVolume));
+    if(master&&ctx) master.gain.setTargetAtTime(userVolume/100,ctx.currentTime,.02);
+  }
+  volumeEl.addEventListener('input',applyVolume);
+  volumeEl.addEventListener('click',e=>e.stopPropagation());
+  volumeEl.addEventListener('pointerdown',e=>e.stopPropagation());
 
   async function audio(){
     if(!ctx){
       ctx=new(window.AudioContext||window.webkitAudioContext)();
-      master=ctx.createGain();master.gain.value=.54;master.connect(ctx.destination);
+      master=ctx.createGain();master.gain.value=userVolume/100;
+      limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-3;limiter.knee.value=3;limiter.ratio.value=12;limiter.attack.value=.003;limiter.release.value=.18;
+      master.connect(limiter);limiter.connect(ctx.destination);
 
       hazardBus=ctx.createGain();hazardBus.gain.value=.72;
       hazardDelay=ctx.createDelay(1.2);hazardDelay.delayTime.value=.31;
