@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<title>Audio Jump — Movements</title>
+<title>Parsec Flux — Movements</title>
 <style>
 :root{color-scheme:dark}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;background:#020504;color:#d7ffe6;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-height:100%}body{display:flex;justify-content:center}main{width:100%;max-width:720px;min-height:100dvh;padding:16px;display:flex;flex-direction:column;gap:12px}.eyebrow{font-size:12px;letter-spacing:.18em;color:#6aa77e}.title{font-size:19px;letter-spacing:.14em;margin:0}.sub{font-size:13px;line-height:1.45;color:#7ea98d;margin:0}.stage{position:relative;min-height:460px;border:1px solid #1b3b28;border-radius:20px;background:radial-gradient(circle at 50% 52%,#07140d 0,#020504 62%);overflow:hidden;touch-action:manipulation}.stars{position:absolute;inset:0;background-image:radial-gradient(#4b7d5c 1px,transparent 1px);background-size:38px 38px;opacity:.18}.hud{position:absolute;inset:14px 14px auto 14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;z-index:3}.hud div{text-align:center;font-size:10px;letter-spacing:.1em;color:#6aa77e}.hud strong{display:block;margin-top:3px;font-size:17px;color:#caffd9}.landerWrap{position:absolute;left:50%;top:54%;width:190px;height:180px;transform:translate(-50%,-50%);transition:transform .12s ease-out;z-index:2}.landerWrap.jump{transform:translate(-50%,-68%)}svg{width:100%;height:100%;overflow:visible}.vec{fill:none;stroke:#b7ffd0;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px rgba(183,255,208,.35))}.thruster{opacity:0}.jump .thruster{opacity:1}.prompt{position:absolute;left:0;right:0;bottom:34px;text-align:center;z-index:3}.prompt b{display:block;font-size:26px;letter-spacing:.08em}.prompt span{display:block;margin-top:5px;color:#6aa77e;font-size:12px}.status{min-height:22px;font-size:13px;color:#91c6a1}.progress{height:4px;background:#0c1b12;border-radius:99px;overflow:hidden}.progress>i{display:block;height:100%;width:0;background:#8ef7ad;transition:width .2s}.footer{font-size:11px;color:#547261;text-align:center}.flash{animation:flash .26s ease-out}@keyframes flash{0%{background:#173823}100%{background:#020504}}@media(prefers-reduced-motion:reduce){.landerWrap{transition:none}.flash{animation:none}}
 </style>
@@ -11,8 +11,8 @@
 <body>
 <main>
   <div class="eyebrow">HEADPHONES • ONE-BUTTON AUDIO SURVIVAL</div>
-  <h1 class="title">MOVEMENTS</h1>
-  <p class="sub">Tap anywhere when the moving sound reaches the center of your head. Ten successful jumps completes a Movement. Each new Movement adds another note to the ambient harmony and harder stereo patterns.</p>
+  <h1 class="title">PARSEC FLUX</h1>
+  <p class="sub">Tap anywhere when the moving sound reaches the center of your head. Ten successful jumps completes a Movement. Each Movement adds one carefully chosen note, gradually building a lush harmony.</p>
   <section id="stage" class="stage" role="button" tabindex="0" aria-label="Tap to jump">
     <div class="stars"></div>
     <div class="hud">
@@ -34,7 +34,7 @@
   </section>
   <div class="progress"><i id="progress"></i></div>
   <div id="status" class="status" aria-live="polite">Tap START to enter Movement I.</div>
-  <div class="footer">The ambient harmony grows one sustained note at a time.</div>
+  <div class="footer">The harmony begins on C and blooms into a luminous C Lydian major sound.</div>
 </main>
 <script>
 (() => {
@@ -42,12 +42,35 @@
   let ctx,master,hazardFilter,running=false,paused=false,score=0,lives=3,movement=1,movementJumps=0,hazards=[],timers=[],ambientNodes=[],nextId=1,startedAt=0;
   const roman=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
   const names=['Origin','Bloom','Drift','Mirage','Aurora','Threshold','Spiral','Radiance','Echo','Infinite'];
-  const harmony=[65.41,98,130.81,196,261.63,329.63,392,523.25,659.25,783.99];
+  // C2, G2, E3, B3, D4, F#4, A4, C5, E5, G5
+  // I=C root; II=open fifth; III=C major; IV=Cmaj7; V=Cmaj9; VI=adds #11; VII=Cmaj13#11.
+  const harmony=[65.4064,97.9989,164.8138,246.9417,293.6648,369.9944,440.0000,523.2511,659.2551,783.9909];
   const label=n=>roman[n-1]||String(n);
   async function audio(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=.5;master.connect(ctx.destination);hazardFilter=ctx.createBiquadFilter();hazardFilter.type='lowpass';hazardFilter.frequency.value=6800;hazardFilter.connect(master)}if(ctx.state==='suspended')await ctx.resume()}
   function clearTimers(){timers.forEach(clearTimeout);timers=[]}
   function stopAmbient(){ambientNodes.forEach(n=>{try{n.stop&&n.stop()}catch(e){}try{n.disconnect()}catch(e){}});ambientNodes=[]}
-  function buildAmbient(m){stopAmbient();const bus=ctx.createGain();bus.gain.value=.045;bus.connect(master);ambientNodes.push(bus);const f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=1350+m*90;f.Q.value=.7;f.connect(bus);ambientNodes.push(f);const count=Math.min(m,harmony.length);for(let i=0;i<count;i++){const base=harmony[i],o1=ctx.createOscillator(),o2=ctx.createOscillator(),g=ctx.createGain(),p=ctx.createStereoPanner?ctx.createStereoPanner():null;o1.type=i%3===0?'sine':'triangle';o2.type='sine';o1.frequency.value=base;o2.frequency.value=base*1.0025;o1.detune.value=-3;o2.detune.value=4;g.gain.value=Math.max(.035,.13-i*.009);o1.connect(g);o2.connect(g);if(p){p.pan.value=count===1?0:-.55+(1.1*i/Math.max(1,count-1));g.connect(p);p.connect(f);ambientNodes.push(p)}else g.connect(f);o1.start();o2.start();ambientNodes.push(o1,o2,g)}const air=ctx.createBufferSource(),len=ctx.sampleRate*2,b=ctx.createBuffer(1,len,ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*.14;air.buffer=b;air.loop=true;const af=ctx.createBiquadFilter(),ag=ctx.createGain();af.type='bandpass';af.frequency.value=1450+m*180;af.Q.value=.85;ag.gain.value=.008;air.connect(af);af.connect(ag);ag.connect(bus);air.start();ambientNodes.push(air,af,ag)}
+  function buildAmbient(m){
+    stopAmbient();
+    const bus=ctx.createGain();bus.gain.value=.045;bus.connect(master);ambientNodes.push(bus);
+    const f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=1350+m*90;f.Q.value=.7;f.connect(bus);ambientNodes.push(f);
+    const count=Math.min(m,harmony.length);
+    for(let i=0;i<count;i++){
+      const base=harmony[i],o1=ctx.createOscillator(),o2=ctx.createOscillator(),g=ctx.createGain(),p=ctx.createStereoPanner?ctx.createStereoPanner():null;
+      o1.type=i%3===0?'sine':'triangle';o2.type='sine';
+      o1.frequency.value=base;o2.frequency.value=base;
+      // Symmetric detune keeps the perceived center on the true musical pitch while adding width.
+      o1.detune.value=-4;o2.detune.value=4;
+      g.gain.value=Math.max(.035,.13-i*.009);
+      o1.connect(g);o2.connect(g);
+      if(p){p.pan.value=count===1?0:-.55+(1.1*i/Math.max(1,count-1));g.connect(p);p.connect(f);ambientNodes.push(p)}else g.connect(f);
+      o1.start();o2.start();ambientNodes.push(o1,o2,g);
+    }
+    const air=ctx.createBufferSource(),len=ctx.sampleRate*2,b=ctx.createBuffer(1,len,ctx.sampleRate),d=b.getChannelData(0);
+    for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*.14;
+    air.buffer=b;air.loop=true;
+    const af=ctx.createBiquadFilter(),ag=ctx.createGain();af.type='bandpass';af.frequency.value=1450+m*180;af.Q.value=.85;ag.gain.value=.008;
+    air.connect(af);af.connect(ag);ag.connect(bus);air.start();ambientNodes.push(air,af,ag)
+  }
   const elapsed=()=>running?(performance.now()-startedAt)/1000:0;
   const flux=()=>1+movement*.85+elapsed()/8;
   function ui(){scoreEl.textContent=score;livesEl.textContent=lives;movementEl.textContent=label(movement);fluxEl.textContent=flux().toFixed(1);progress.style.width=(movementJumps*10)+'%'}
@@ -56,7 +79,7 @@
   function failSound(){const o=ctx.createOscillator(),g=ctx.createGain();o.type='sawtooth';o.frequency.value=72;g.gain.value=.12;o.connect(g);g.connect(master);g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.34);o.start();o.stop(ctx.currentTime+.36)}
   function hazard(duration,id,direction=1,pitch=120){const start=ctx.currentTime+.05,end=start+duration,center=start+duration/2,bus=ctx.createGain();bus.gain.setValueAtTime(.006,start);bus.gain.exponentialRampToValueAtTime(.2,center);bus.gain.exponentialRampToValueAtTime(.008,end);const p=ctx.createStereoPanner?ctx.createStereoPanner():null;if(p){p.pan.setValueAtTime(direction,start);p.pan.linearRampToValueAtTime(-direction,end);bus.connect(p);p.connect(hazardFilter)}else bus.connect(hazardFilter);[1,1.48,2.04].forEach((r,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type=i===0?'sawtooth':i===1?'triangle':'sine';o.frequency.setValueAtTime(pitch*r,start);o.frequency.exponentialRampToValueAtTime(pitch*r*1.45,end);g.gain.value=i===0?.28:.14;o.connect(g);g.connect(bus);o.start(start);o.stop(end+.02)});const centerMs=(center-ctx.currentTime)*1000,windowMs=Math.max(135,430-movement*26);hazards.push({id,hit:false,center:performance.now()+centerMs,window:windowMs});timers.push(setTimeout(()=>{const h=hazards.find(x=>x.id===id);if(h&&!h.hit)miss(h)},centerMs+windowMs+70))}
   function miss(h){if(h.hit)return;h.hit=true;lives--;failSound();status.textContent='HIT.';ui();if(lives<=0)gameOver()}
-  function completeMovement(){paused=true;running=false;clearTimers();hazards=[];movement++;movementJumps=0;big.textContent='MOVEMENT '+label(movement)+' ACQUIRED';small.textContent=names[movement-1]||'Beyond';status.textContent='A new note enters the composition.';buildAmbient(movement);ui();timers.push(setTimeout(()=>{big.textContent='LISTEN';small.textContent=movement===2?'Hazards can now arrive from either side.':movement>=3?'Multiple sounds may now overlap.':'The harmony is changing.'},1300));timers.push(setTimeout(()=>{paused=false;running=true;startedAt=performance.now();big.textContent='TAP TO JUMP';small.textContent='Eyes closed';status.textContent='Movement '+label(movement)+' · '+(names[movement-1]||'Beyond');scheduleWave()},3400))}
+  function completeMovement(){paused=true;running=false;clearTimers();hazards=[];movement++;movementJumps=0;big.textContent='MOVEMENT '+label(movement)+' ACQUIRED';small.textContent=names[movement-1]||'Beyond';status.textContent='A new harmonic tone enters the composition.';buildAmbient(movement);ui();timers.push(setTimeout(()=>{big.textContent='LISTEN';small.textContent=movement===2?'Hazards can now arrive from either side.':movement>=3?'Multiple sounds may now overlap.':'The harmony is changing.'},1300));timers.push(setTimeout(()=>{paused=false;running=true;startedAt=performance.now();big.textContent='TAP TO JUMP';small.textContent='Eyes closed';status.textContent='Movement '+label(movement)+' · '+(names[movement-1]||'Beyond');scheduleWave()},3400))}
   function tap(){if(paused)return;if(!running){startGame();return}jumpVisual();const now=performance.now(),candidates=hazards.filter(h=>!h.hit).map(h=>({h,delta:Math.abs(now-h.center)})).sort((a,b)=>a.delta-b.delta);if(!candidates.length)return;const c=candidates[0];if(c.delta<=c.h.window){c.h.hit=true;score++;movementJumps++;jumpTone();status.textContent='Jump '+movementJumps+'/10';ui();if(movementJumps>=10)completeMovement()}else status.textContent=c.h.center>now?'Too early.':'Too late.'}
   function scheduleWave(){if(!running||paused||lives<=0)return;const duration=Math.max(.7,5.8-(movement-1)*.5-elapsed()*.012),direction=movement===1?1:(Math.random()<.5?1:-1);hazard(duration,nextId++,direction,105+Math.random()*44);if(movement>=3&&Math.random()<Math.min(.72,.2+(movement-3)*.1)){const gap=Math.max(350,1350-movement*105);timers.push(setTimeout(()=>{if(running&&!paused)hazard(Math.max(.62,duration*(.75+Math.random()*.16)),nextId++,-direction,150+Math.random()*65)},gap))}if(movement>=5&&Math.random()<.28){const gap2=Math.max(620,1700-movement*90);timers.push(setTimeout(()=>{if(running&&!paused)hazard(Math.max(.58,duration*.68),nextId++,Math.random()<.5?1:-1,195+Math.random()*80)},gap2))}const nextDelay=Math.max(850,4800-(movement-1)*390-elapsed()*10)+Math.random()*620;timers.push(setTimeout(scheduleWave,nextDelay));ui()}
   async function startGame(){await audio();clearTimers();stopAmbient();score=0;lives=3;movement=1;movementJumps=0;hazards=[];running=true;paused=false;startedAt=performance.now();buildAmbient(movement);big.textContent='TAP TO JUMP';small.textContent='Close your eyes';status.textContent='Movement I · Origin';ui();timers.push(setTimeout(scheduleWave,1500))}
