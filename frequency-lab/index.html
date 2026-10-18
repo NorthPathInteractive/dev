@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+<meta name="theme-color" content="#090a0f" />
+<title>Frequency Lab</title>
+<style>
+  :root{--bg:#090a0f;--panel:#11131b;--line:#272b39;--text:#f4f6fb;--muted:#9499aa;--glow:#d9ff65;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overscroll-behavior:none}
+  body{padding:max(18px,env(safe-area-inset-top)) 16px max(26px,env(safe-area-inset-bottom));display:flex;justify-content:center}
+  main{width:min(760px,100%)}
+  header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:4px 0 22px}
+  h1{font-size:clamp(25px,7vw,42px);line-height:.95;margin:0;letter-spacing:-.04em}
+  .sub{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.18em;margin-top:8px}
+  .readout{text-align:right;font-variant-numeric:tabular-nums}
+  .hz{font-size:clamp(25px,7vw,40px);font-weight:760;letter-spacing:-.04em}
+  .hz small{font-size:.38em;color:var(--muted);letter-spacing:.08em}
+  button,select,input{font:inherit}
+  .start{width:100%;border:1px solid var(--line);border-radius:18px;padding:17px 18px;background:var(--text);color:#050609;font-weight:800;letter-spacing:.08em;margin-bottom:16px}
+  .start.on{background:var(--glow)}
+  .card{background:linear-gradient(180deg,#12151e,#0e1017);border:1px solid var(--line);border-radius:22px;padding:18px;margin:12px 0}
+  .topline{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+  .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.15em}
+  .value{font-variant-numeric:tabular-nums;font-weight:700}
+  .freqpad{position:relative;height:190px;border-radius:18px;border:1px solid #303547;overflow:hidden;touch-action:none;background:
+      repeating-linear-gradient(90deg,transparent 0,transparent calc(10% - 1px),rgba(255,255,255,.06) calc(10% - 1px),rgba(255,255,255,.06) 10%),
+      linear-gradient(90deg,#151720,#222736)}
+  .freqpad:before{content:"LOW";position:absolute;left:14px;bottom:12px;font-size:11px;color:#697084;letter-spacing:.16em}
+  .freqpad:after{content:"HIGH";position:absolute;right:14px;bottom:12px;font-size:11px;color:#697084;letter-spacing:.16em}
+  .cursor{position:absolute;top:0;bottom:0;width:2px;background:var(--glow);box-shadow:0 0 20px rgba(217,255,101,.85);pointer-events:none}
+  .cursor:after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:var(--glow);box-shadow:0 0 34px rgba(217,255,101,.7)}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+  .step{border:1px solid var(--line);background:#151822;color:var(--text);border-radius:12px;padding:11px 5px;font-size:13px}
+  .step:active{background:#242938}
+  .row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:16px 0 8px}
+  input[type=range]{width:100%;accent-color:var(--glow)}
+  select{background:#151822;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .wavegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .wave{border:1px solid var(--line);border-radius:12px;padding:12px 4px;background:#151822;color:var(--text)}
+  .wave.active{border-color:var(--glow);box-shadow:inset 0 0 0 1px var(--glow);color:var(--glow)}
+  .meter{height:7px;border-radius:99px;background:#1e2230;overflow:hidden;margin-top:12px}
+  .meter>i{display:block;height:100%;width:50%;background:var(--glow);transition:width .12s linear}
+  .hint{color:var(--muted);font-size:13px;line-height:1.45;margin-top:12px}
+  footer{color:#626879;text-align:center;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-top:20px}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div><h1>Frequency<br>Lab</h1><div class="sub">listen to sound change</div></div>
+  <div class="readout"><div class="hz"><span id="hz">220.00</span> <small>Hz</small></div><div class="sub" id="panRead">centre</div></div>
+</header>
+
+<button class="start" id="start">START TONE</button>
+
+<section class="card">
+  <div class="topline"><span class="label">Frequency</span><span class="value" id="freqLabel">220.00 Hz</span></div>
+  <div class="freqpad" id="freqpad" aria-label="frequency control"><div class="cursor" id="cursor"></div></div>
+  <div class="steps">
+    <button class="step" data-step="-10">−10</button>
+    <button class="step" data-step="-1">−1</button>
+    <button class="step" data-step="1">+1</button>
+    <button class="step" data-step="10">+10</button>
+  </div>
+  <div class="row"><span class="label">Range</span><select id="range"><option value="20,500">20–500 Hz</option><option value="20,2000" selected>20–2,000 Hz</option><option value="20,20000">20–20,000 Hz</option></select></div>
+  <div class="row"><span class="label">Glide</span><span class="value"><span id="glideV">180</span> ms</span></div>
+  <input type="range" id="glide" min="0" max="1500" step="10" value="180">
+  <div class="hint">Drag left and right. Frequency uses a logarithmic scale, so the movement feels closer to how human hearing perceives pitch.</div>
+</section>
+
+<section class="card">
+  <div class="topline"><span class="label">Tone shape</span><span class="value" id="waveLabel">Sine</span></div>
+  <div class="wavegrid">
+    <button class="wave active" data-wave="sine">Sine</button>
+    <button class="wave" data-wave="triangle">Triangle</button>
+    <button class="wave" data-wave="square">Square</button>
+    <button class="wave" data-wave="sawtooth">Saw</button>
+  </div>
+</section>
+
+<section class="card">
+  <div class="topline"><span class="label">Vibrato</span><span class="value" id="vibState">off</span></div>
+  <div class="row"><span class="label">Depth</span><span class="value"><span id="depthV">0.0</span> Hz</span></div>
+  <input type="range" id="depth" min="0" max="100" step="0.1" value="0">
+  <div class="row"><span class="label">Speed</span><span class="value"><span id="rateV">5.0</span> Hz</span></div>
+  <input type="range" id="rate" min="0.1" max="20" step="0.1" value="5">
+  <div class="hint">Depth controls how far the pitch bends above and below the selected frequency. Speed controls how many wobbles happen each second.</div>
+</section>
+
+<section class="card">
+  <div class="topline"><span class="label">Stereo position</span><span class="value" id="panV">0.00</span></div>
+  <input type="range" id="pan" min="-1" max="1" step="0.01" value="0">
+  <div class="row"><span class="label">Volume</span><span class="value"><span id="volV">18</span>%</span></div>
+  <input type="range" id="vol" min="0" max="35" step="1" value="18">
+  <div class="meter"><i id="meter"></i></div>
+  <div class="hint">Use headphones to hear panning clearly. Volume is deliberately capped low for safer tone exploration.</div>
+</section>
+<footer>North Path Interactive · Web Audio experiment</footer>
+</main>
+<script>
+let ctx,osc,gain,pan,lfo,lfoGain,running=false;
+let freq=220,minHz=20,maxHz=2000,wave='sine';
+const $=id=>document.getElementById(id);
+const hz=$('hz'), freqLabel=$('freqLabel'), pad=$('freqpad'), cursor=$('cursor');
+
+function ensureAudio(){
+  if(ctx) return;
+  ctx=new (window.AudioContext||window.webkitAudioContext)();
+  osc=ctx.createOscillator(); gain=ctx.createGain(); pan=ctx.createStereoPanner();
+  lfo=ctx.createOscillator(); lfoGain=ctx.createGain();
+  osc.type=wave; osc.frequency.value=freq;
+  gain.gain.value=0; pan.pan.value=0;
+  lfo.frequency.value=5; lfoGain.gain.value=0;
+  lfo.connect(lfoGain).connect(osc.frequency);
+  osc.connect(gain).connect(pan).connect(ctx.destination);
+  osc.start(); lfo.start();
+}
+function setRunning(on){
+  ensureAudio(); running=on;
+  if(ctx.state==='suspended') ctx.resume();
+  const now=ctx.currentTime; gain.gain.cancelScheduledValues(now);
+  gain.gain.setTargetAtTime(on?(+$('vol').value/100):0,now,.025);
+  $('start').textContent=on?'STOP TONE':'START TONE'; $('start').classList.toggle('on',on);
+}
+$('start').addEventListener('click',()=>setRunning(!running));
+
+function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
+function freqToX(f){return (Math.log(f/minHz)/Math.log(maxHz/minHz))*100}
+function xToFreq(x){return minHz*Math.pow(maxHz/minHz,clamp(x,0,1))}
+function draw(){
+  hz.textContent=freq.toFixed(freq<100?2:1); freqLabel.textContent=freq.toFixed(freq<100?2:1)+' Hz';
+  cursor.style.left=freqToX(freq)+'%';
+}
+function setFreq(v){
+  freq=clamp(v,minHz,maxHz); draw();
+  if(!ctx) return;
+  const now=ctx.currentTime, t=+$('glide').value/1000;
+  osc.frequency.cancelScheduledValues(now);
+  if(t<=0) osc.frequency.setValueAtTime(freq,now); else osc.frequency.setTargetAtTime(freq,now,Math.max(.005,t/4));
+}
+function padSet(e){
+  const r=pad.getBoundingClientRect(); setFreq(xToFreq((e.clientX-r.left)/r.width));
+}
+pad.addEventListener('pointerdown',e=>{pad.setPointerCapture(e.pointerId);padSet(e)});
+pad.addEventListener('pointermove',e=>{if(pad.hasPointerCapture(e.pointerId))padSet(e)});
+
+document.querySelectorAll('.step').forEach(b=>b.addEventListener('click',()=>setFreq(freq+(+b.dataset.step))));
+$('range').addEventListener('change',e=>{[minHz,maxHz]=e.target.value.split(',').map(Number);setFreq(clamp(freq,minHz,maxHz))});
+$('glide').addEventListener('input',e=>$('glideV').textContent=e.target.value);
+
+document.querySelectorAll('.wave').forEach(b=>b.addEventListener('click',()=>{
+  wave=b.dataset.wave; ensureAudio(); osc.type=wave;
+  document.querySelectorAll('.wave').forEach(x=>x.classList.toggle('active',x===b));
+  $('waveLabel').textContent=b.textContent;
+}));
+
+function updateVibrato(){
+  const d=+$('depth').value,r=+$('rate').value;
+  $('depthV').textContent=d.toFixed(1); $('rateV').textContent=r.toFixed(1); $('vibState').textContent=d?'on':'off';
+  ensureAudio(); lfo.frequency.setTargetAtTime(r,ctx.currentTime,.02); lfoGain.gain.setTargetAtTime(d,ctx.currentTime,.02);
+}
+$('depth').addEventListener('input',updateVibrato); $('rate').addEventListener('input',updateVibrato);
+$('pan').addEventListener('input',e=>{
+  const v=+e.target.value; $('panV').textContent=v.toFixed(2); $('panRead').textContent=v<-.05?'left':v>.05?'right':'centre';
+  ensureAudio(); pan.pan.setTargetAtTime(v,ctx.currentTime,.02);
+});
+$('vol').addEventListener('input',e=>{
+  const v=+e.target.value; $('volV').textContent=v; $('meter').style.width=(v/35*100)+'%';
+  if(ctx&&running) gain.gain.setTargetAtTime(v/100,ctx.currentTime,.025);
+});
+
+draw(); $('meter').style.width=(18/35*100)+'%';
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&running)setRunning(false)});
+</script>
+</body>
+</html>
