@@ -24,22 +24,24 @@
   .topline{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
   .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.15em}
   .value{font-variant-numeric:tabular-nums;font-weight:700}
-  .freqpad{position:relative;height:190px;border-radius:18px;border:1px solid #303547;overflow:hidden;touch-action:none;background:
-      repeating-linear-gradient(90deg,transparent 0,transparent calc(10% - 1px),rgba(255,255,255,.06) calc(10% - 1px),rgba(255,255,255,.06) 10%),
-      linear-gradient(90deg,#151720,#222736)}
+  .freqpad{position:relative;height:190px;border-radius:18px;border:1px solid #303547;overflow:hidden;touch-action:none;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(10% - 1px),rgba(255,255,255,.06) calc(10% - 1px),rgba(255,255,255,.06) 10%),linear-gradient(90deg,#151720,#222736)}
   .freqpad:before{content:"LOW";position:absolute;left:14px;bottom:12px;font-size:11px;color:#697084;letter-spacing:.16em}
   .freqpad:after{content:"HIGH";position:absolute;right:14px;bottom:12px;font-size:11px;color:#697084;letter-spacing:.16em}
   .cursor{position:absolute;top:0;bottom:0;width:2px;background:var(--glow);box-shadow:0 0 20px rgba(217,255,101,.85);pointer-events:none}
   .cursor:after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:var(--glow);box-shadow:0 0 34px rgba(217,255,101,.7)}
   .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
-  .step{border:1px solid var(--line);background:#151822;color:var(--text);border-radius:12px;padding:11px 5px;font-size:13px}
-  .step:active{background:#242938}
+  .step,.preset,.note,.wave{border:1px solid var(--line);background:#151822;color:var(--text);border-radius:12px;padding:11px 5px;font-size:13px}
+  .step:active,.preset:active,.note:active{background:#242938}
   .row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:16px 0 8px}
   input[type=range]{width:100%;accent-color:var(--glow)}
   select{background:#151822;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
   .wavegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-  .wave{border:1px solid var(--line);border-radius:12px;padding:12px 4px;background:#151822;color:var(--text)}
-  .wave.active{border-color:var(--glow);box-shadow:inset 0 0 0 1px var(--glow);color:var(--glow)}
+  .wave.active,.note.active,.preset.active{border-color:var(--glow);box-shadow:inset 0 0 0 1px var(--glow);color:var(--glow)}
+  .notegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .note{padding:13px 5px;font-weight:700}
+  .presetgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+  .preset{padding:12px 5px}
+  .chordread{margin-top:12px;padding:12px;border-radius:14px;background:#0b0d13;border:1px solid #202432;font-variant-numeric:tabular-nums;line-height:1.5;color:#cfd3df}
   .meter{height:7px;border-radius:99px;background:#1e2230;overflow:hidden;margin-top:12px}
   .meter>i{display:block;height:100%;width:50%;background:var(--glow);transition:width .12s linear}
   .hint{color:var(--muted);font-size:13px;line-height:1.45;margin-top:12px}
@@ -53,7 +55,7 @@
   <div class="readout"><div class="hz"><span id="hz">220.00</span> <small>Hz</small></div><div class="sub" id="panRead">centre</div></div>
 </header>
 
-<button class="start" id="start">START TONE</button>
+<button class="start" id="start">START SOUND</button>
 
 <section class="card">
   <div class="topline"><span class="label">Frequency</span><span class="value" id="freqLabel">220.00 Hz</span></div>
@@ -67,7 +69,35 @@
   <div class="row"><span class="label">Range</span><select id="range"><option value="20,500">20–500 Hz</option><option value="20,2000" selected>20–2,000 Hz</option><option value="20,20000">20–20,000 Hz</option></select></div>
   <div class="row"><span class="label">Glide</span><span class="value"><span id="glideV">180</span> ms</span></div>
   <input type="range" id="glide" min="0" max="1500" step="10" value="180">
-  <div class="hint">Drag left and right. Frequency uses a logarithmic scale, so the movement feels closer to how human hearing perceives pitch.</div>
+  <div class="hint">The frequency control is the root tone. Any chord notes you add move with it, preserving their musical intervals.</div>
+</section>
+
+<section class="card">
+  <div class="topline"><span class="label">Chord builder</span><span class="value" id="voiceCount">1 voice</span></div>
+  <div class="notegrid" id="notes">
+    <button class="note active" data-semi="0">ROOT</button>
+    <button class="note" data-semi="1">♭2</button>
+    <button class="note" data-semi="2">2</button>
+    <button class="note" data-semi="3">♭3</button>
+    <button class="note" data-semi="4">3</button>
+    <button class="note" data-semi="5">4</button>
+    <button class="note" data-semi="7">5</button>
+    <button class="note" data-semi="8">♭6</button>
+    <button class="note" data-semi="9">6</button>
+    <button class="note" data-semi="10">♭7</button>
+    <button class="note" data-semi="11">7</button>
+    <button class="note" data-semi="12">OCT</button>
+  </div>
+  <div class="presetgrid">
+    <button class="preset" data-chord="0,4,7">Major</button>
+    <button class="preset" data-chord="0,3,7">Minor</button>
+    <button class="preset" data-chord="0,7">Fifth</button>
+    <button class="preset" data-chord="0,4,7,10">Dom 7</button>
+    <button class="preset" data-chord="0,4,7,11">Maj 7</button>
+    <button class="preset" data-chord="0,3,7,10">Min 7</button>
+  </div>
+  <div class="chordread" id="chordRead">220.00 Hz</div>
+  <div class="hint">Tap any interval to add or remove it. Presets are just shortcuts. The exact frequencies are shown above so you can hear and inspect how a chord is constructed.</div>
 </section>
 
 <section class="card">
@@ -86,7 +116,7 @@
   <input type="range" id="depth" min="0" max="100" step="0.1" value="0">
   <div class="row"><span class="label">Speed</span><span class="value"><span id="rateV">5.0</span> Hz</span></div>
   <input type="range" id="rate" min="0.1" max="20" step="0.1" value="5">
-  <div class="hint">Depth controls how far the pitch bends above and below the selected frequency. Speed controls how many wobbles happen each second.</div>
+  <div class="hint">One shared vibrato source bends every note together, so the whole chord breathes as one sound.</div>
 </section>
 
 <section class="card">
@@ -100,49 +130,73 @@
 <footer>North Path Interactive · Web Audio experiment</footer>
 </main>
 <script>
-let ctx,osc,gain,pan,lfo,lfoGain,running=false;
+let ctx,gain,pan,lfo,running=false;
 let freq=220,minHz=20,maxHz=2000,wave='sine';
+let activeIntervals=new Set([0]);
+let voices=new Map();
 const $=id=>document.getElementById(id);
 const hz=$('hz'), freqLabel=$('freqLabel'), pad=$('freqpad'), cursor=$('cursor');
+
+function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
+function ratioFor(semi){return Math.pow(2,semi/12)}
+function voiceFreq(semi){return freq*ratioFor(semi)}
 
 function ensureAudio(){
   if(ctx) return;
   ctx=new (window.AudioContext||window.webkitAudioContext)();
-  osc=ctx.createOscillator(); gain=ctx.createGain(); pan=ctx.createStereoPanner();
-  lfo=ctx.createOscillator(); lfoGain=ctx.createGain();
-  osc.type=wave; osc.frequency.value=freq;
-  gain.gain.value=0; pan.pan.value=0;
-  lfo.frequency.value=5; lfoGain.gain.value=0;
-  lfo.connect(lfoGain).connect(osc.frequency);
-  osc.connect(gain).connect(pan).connect(ctx.destination);
-  osc.start(); lfo.start();
+  gain=ctx.createGain(); pan=ctx.createStereoPanner(); lfo=ctx.createOscillator();
+  gain.gain.value=0; pan.pan.value=0; lfo.frequency.value=5;
+  gain.connect(pan).connect(ctx.destination);
+  lfo.start();
+  syncVoices();
+}
+
+function createVoice(semi){
+  if(!ctx||voices.has(semi)) return;
+  const osc=ctx.createOscillator(), mod=ctx.createGain();
+  osc.type=wave; osc.frequency.value=voiceFreq(semi); mod.gain.value=+$('depth').value;
+  lfo.connect(mod).connect(osc.frequency); osc.connect(gain); osc.start();
+  voices.set(semi,{osc,mod});
+}
+function removeVoice(semi){
+  const v=voices.get(semi); if(!v) return;
+  try{v.osc.stop()}catch(e){}; try{v.osc.disconnect()}catch(e){}; try{v.mod.disconnect()}catch(e){};
+  voices.delete(semi);
+}
+function syncVoices(){
+  if(!ctx) return;
+  [...voices.keys()].forEach(s=>{if(!activeIntervals.has(s))removeVoice(s)});
+  activeIntervals.forEach(createVoice);
+  updateVoiceFrequencies();
+}
+function updateVoiceFrequencies(){
+  if(!ctx) return;
+  const now=ctx.currentTime,t=+$('glide').value/1000;
+  voices.forEach((v,semi)=>{
+    const target=voiceFreq(semi); v.osc.frequency.cancelScheduledValues(now);
+    if(t<=0)v.osc.frequency.setValueAtTime(target,now); else v.osc.frequency.setTargetAtTime(target,now,Math.max(.005,t/4));
+  });
 }
 function setRunning(on){
-  ensureAudio(); running=on;
-  if(ctx.state==='suspended') ctx.resume();
+  ensureAudio(); running=on; if(ctx.state==='suspended')ctx.resume();
   const now=ctx.currentTime; gain.gain.cancelScheduledValues(now);
-  gain.gain.setTargetAtTime(on?(+$('vol').value/100):0,now,.025);
-  $('start').textContent=on?'STOP TONE':'START TONE'; $('start').classList.toggle('on',on);
+  const count=Math.max(1,activeIntervals.size); const base=+$('vol').value/100;
+  gain.gain.setTargetAtTime(on?base/Math.sqrt(count):0,now,.025);
+  $('start').textContent=on?'STOP SOUND':'START SOUND'; $('start').classList.toggle('on',on);
 }
 $('start').addEventListener('click',()=>setRunning(!running));
 
-function clamp(v,a,b){return Math.min(b,Math.max(a,v))}
 function freqToX(f){return (Math.log(f/minHz)/Math.log(maxHz/minHz))*100}
 function xToFreq(x){return minHz*Math.pow(maxHz/minHz,clamp(x,0,1))}
 function draw(){
   hz.textContent=freq.toFixed(freq<100?2:1); freqLabel.textContent=freq.toFixed(freq<100?2:1)+' Hz';
-  cursor.style.left=freqToX(freq)+'%';
+  cursor.style.left=clamp(freqToX(freq),0,100)+'%';
+  const list=[...activeIntervals].sort((a,b)=>a-b).map(s=>voiceFreq(s).toFixed(2)+' Hz');
+  $('chordRead').textContent=list.join('  •  ');
+  $('voiceCount').textContent=activeIntervals.size+(activeIntervals.size===1?' voice':' voices');
 }
-function setFreq(v){
-  freq=clamp(v,minHz,maxHz); draw();
-  if(!ctx) return;
-  const now=ctx.currentTime, t=+$('glide').value/1000;
-  osc.frequency.cancelScheduledValues(now);
-  if(t<=0) osc.frequency.setValueAtTime(freq,now); else osc.frequency.setTargetAtTime(freq,now,Math.max(.005,t/4));
-}
-function padSet(e){
-  const r=pad.getBoundingClientRect(); setFreq(xToFreq((e.clientX-r.left)/r.width));
-}
+function setFreq(v){freq=clamp(v,minHz,maxHz);draw();updateVoiceFrequencies()}
+function padSet(e){const r=pad.getBoundingClientRect();setFreq(xToFreq((e.clientX-r.left)/r.width))}
 pad.addEventListener('pointerdown',e=>{pad.setPointerCapture(e.pointerId);padSet(e)});
 pad.addEventListener('pointermove',e=>{if(pad.hasPointerCapture(e.pointerId))padSet(e)});
 
@@ -150,28 +204,32 @@ document.querySelectorAll('.step').forEach(b=>b.addEventListener('click',()=>set
 $('range').addEventListener('change',e=>{[minHz,maxHz]=e.target.value.split(',').map(Number);setFreq(clamp(freq,minHz,maxHz))});
 $('glide').addEventListener('input',e=>$('glideV').textContent=e.target.value);
 
+function setChord(intervals){
+  activeIntervals=new Set(intervals.map(Number)); if(!activeIntervals.has(0))activeIntervals.add(0);
+  document.querySelectorAll('.note').forEach(n=>n.classList.toggle('active',activeIntervals.has(+n.dataset.semi)));
+  document.querySelectorAll('.preset').forEach(p=>p.classList.toggle('active',p.dataset.chord.split(',').map(Number).every(x=>activeIntervals.has(x)) && activeIntervals.size===p.dataset.chord.split(',').length));
+  syncVoices(); draw(); if(ctx&&running){const base=+$('vol').value/100;gain.gain.setTargetAtTime(base/Math.sqrt(activeIntervals.size),ctx.currentTime,.025)}
+}
+document.querySelectorAll('.note').forEach(n=>n.addEventListener('click',()=>{
+  const s=+n.dataset.semi; if(s===0)return;
+  const next=new Set(activeIntervals); next.has(s)?next.delete(s):next.add(s); setChord([...next]);
+}));
+document.querySelectorAll('.preset').forEach(p=>p.addEventListener('click',()=>setChord(p.dataset.chord.split(',').map(Number))));
+
 document.querySelectorAll('.wave').forEach(b=>b.addEventListener('click',()=>{
-  wave=b.dataset.wave; ensureAudio(); osc.type=wave;
-  document.querySelectorAll('.wave').forEach(x=>x.classList.toggle('active',x===b));
-  $('waveLabel').textContent=b.textContent;
+  wave=b.dataset.wave; ensureAudio(); voices.forEach(v=>v.osc.type=wave);
+  document.querySelectorAll('.wave').forEach(x=>x.classList.toggle('active',x===b)); $('waveLabel').textContent=b.textContent;
 }));
 
 function updateVibrato(){
-  const d=+$('depth').value,r=+$('rate').value;
-  $('depthV').textContent=d.toFixed(1); $('rateV').textContent=r.toFixed(1); $('vibState').textContent=d?'on':'off';
-  ensureAudio(); lfo.frequency.setTargetAtTime(r,ctx.currentTime,.02); lfoGain.gain.setTargetAtTime(d,ctx.currentTime,.02);
+  const d=+$('depth').value,r=+$('rate').value; $('depthV').textContent=d.toFixed(1); $('rateV').textContent=r.toFixed(1); $('vibState').textContent=d?'on':'off';
+  ensureAudio(); lfo.frequency.setTargetAtTime(r,ctx.currentTime,.02); voices.forEach(v=>v.mod.gain.setTargetAtTime(d,ctx.currentTime,.02));
 }
 $('depth').addEventListener('input',updateVibrato); $('rate').addEventListener('input',updateVibrato);
-$('pan').addEventListener('input',e=>{
-  const v=+e.target.value; $('panV').textContent=v.toFixed(2); $('panRead').textContent=v<-.05?'left':v>.05?'right':'centre';
-  ensureAudio(); pan.pan.setTargetAtTime(v,ctx.currentTime,.02);
-});
-$('vol').addEventListener('input',e=>{
-  const v=+e.target.value; $('volV').textContent=v; $('meter').style.width=(v/35*100)+'%';
-  if(ctx&&running) gain.gain.setTargetAtTime(v/100,ctx.currentTime,.025);
-});
+$('pan').addEventListener('input',e=>{const v=+e.target.value;$('panV').textContent=v.toFixed(2);$('panRead').textContent=v<-.05?'left':v>.05?'right':'centre';ensureAudio();pan.pan.setTargetAtTime(v,ctx.currentTime,.02)});
+$('vol').addEventListener('input',e=>{const v=+e.target.value;$('volV').textContent=v;$('meter').style.width=(v/35*100)+'%';if(ctx&&running)gain.gain.setTargetAtTime((v/100)/Math.sqrt(Math.max(1,activeIntervals.size)),ctx.currentTime,.025)});
 
-draw(); $('meter').style.width=(18/35*100)+'%';
+draw();$('meter').style.width=(18/35*100)+'%';
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&running)setRunning(false)});
 </script>
 </body>
