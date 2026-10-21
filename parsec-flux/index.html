@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<title>Parsec Flux v0.4.1 — Movements</title>
+<title>Parsec Flux v0.5.0 — Chord Climb</title>
 <style>
-:root{color-scheme:dark}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;background:#020504;color:#d7ffe6;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-height:100%}body{display:flex;justify-content:center}main{width:100%;max-width:720px;min-height:100dvh;padding:16px;display:flex;flex-direction:column;gap:12px}.eyebrow{font-size:12px;letter-spacing:.18em;color:#6aa77e}.title{font-size:19px;letter-spacing:.14em;margin:0}.sub{font-size:13px;line-height:1.45;color:#7ea98d;margin:0}.stage{position:relative;min-height:460px;border:1px solid #1b3b28;border-radius:20px;background:radial-gradient(circle at 50% 52%,#07140d 0,#020504 62%);overflow:hidden;touch-action:manipulation}.stars{position:absolute;inset:0;background-image:radial-gradient(#4b7d5c 1px,transparent 1px);background-size:38px 38px;opacity:.18}.hud{position:absolute;inset:14px 14px auto 14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;z-index:3}.hud div{text-align:center;font-size:10px;letter-spacing:.1em;color:#6aa77e}.hud strong{display:block;margin-top:3px;font-size:17px;color:#caffd9}.landerWrap{position:absolute;left:50%;top:54%;width:190px;height:180px;transform:translate(-50%,-50%);transition:transform .12s ease-out;z-index:2}.landerWrap.jump{transform:translate(-50%,-68%)}svg{width:100%;height:100%;overflow:visible}.vec{fill:none;stroke:#b7ffd0;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px rgba(183,255,208,.35))}.thruster{opacity:0}.jump .thruster{opacity:1}.prompt{position:absolute;left:0;right:0;bottom:34px;text-align:center;z-index:3}.prompt b{display:block;font-size:26px;letter-spacing:.08em}.prompt span{display:block;margin-top:5px;color:#6aa77e;font-size:12px}.status{min-height:22px;font-size:13px;color:#91c6a1}.progress{height:4px;background:#0c1b12;border-radius:99px;overflow:hidden}.progress>i{display:block;height:100%;width:0;background:#8ef7ad;transition:width .2s}.volume{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid #173421;border-radius:14px;background:#050b07}.volume label{font-size:11px;letter-spacing:.12em;color:#79a989}.volume output{min-width:42px;text-align:right;font-size:12px;color:#caffd9}.volume input{width:100%;accent-color:#8ef7ad;touch-action:manipulation}.footer{font-size:11px;color:#547261;text-align:center}.flash{animation:flash .26s ease-out}@keyframes flash{0%{background:#173823}100%{background:#020504}}@media(prefers-reduced-motion:reduce){.landerWrap{transition:none}.flash{animation:none}}
+:root{color-scheme:dark}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;background:#020504;color:#d7ffe6;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-height:100%}body{display:flex;justify-content:center}main{width:100%;max-width:720px;min-height:100dvh;padding:16px;display:flex;flex-direction:column;gap:12px}.eyebrow{font-size:12px;letter-spacing:.18em;color:#6aa77e}.title{font-size:19px;letter-spacing:.14em;margin:0}.title span{font-size:.62em;color:#6aa77e;letter-spacing:.08em}.sub{font-size:13px;line-height:1.45;color:#7ea98d;margin:0}.stage{position:relative;min-height:460px;border:1px solid #1b3b28;border-radius:20px;background:radial-gradient(circle at 50% 52%,#07140d 0,#020504 62%);overflow:hidden;touch-action:manipulation;transition:background 1.5s ease,border-color 1.5s ease}.stars{position:absolute;inset:0;background-image:radial-gradient(#4b7d5c 1px,transparent 1px);background-size:38px 38px;opacity:.18}.hud{position:absolute;inset:14px 14px auto 14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;z-index:3}.hud div{text-align:center;font-size:10px;letter-spacing:.1em;color:#6aa77e}.hud strong{display:block;margin-top:3px;font-size:16px;color:#caffd9}.landerWrap{position:absolute;left:50%;top:54%;width:190px;height:180px;transform:translate(-50%,-50%);transition:transform .12s ease-out;z-index:2}.landerWrap.jump{transform:translate(-50%,-68%)}svg{width:100%;height:100%;overflow:visible}.vec{fill:none;stroke:#b7ffd0;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px rgba(183,255,208,.35))}.thruster{opacity:0}.jump .thruster{opacity:1}.prompt{position:absolute;left:0;right:0;bottom:34px;text-align:center;z-index:3}.prompt b{display:block;font-size:25px;letter-spacing:.08em}.prompt span{display:block;margin-top:5px;color:#6aa77e;font-size:12px}.chord{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.note{min-width:48px;text-align:center;border:1px solid #173421;border-radius:10px;padding:7px 8px;color:#52715f;background:#040a06;transition:.35s ease}.note.on{color:#d8ffe5;border-color:#69c486;box-shadow:0 0 18px rgba(105,196,134,.16);background:#07150c}.note.target{border-color:#b9ffd0;color:#b9ffd0}.status{min-height:22px;font-size:13px;color:#91c6a1}.progress{height:4px;background:#0c1b12;border-radius:99px;overflow:hidden}.progress>i{display:block;height:100%;width:0;background:#8ef7ad;transition:width .3s}.volume{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid #173421;border-radius:14px;background:#050b07}.volume label{font-size:11px;letter-spacing:.12em;color:#79a989}.volume output{min-width:42px;text-align:right;font-size:12px;color:#caffd9}.volume input{width:100%;accent-color:#8ef7ad;touch-action:manipulation}.footer{font-size:11px;color:#547261;text-align:center}.flash{animation:flash .26s ease-out}.shatter{animation:shatter .9s ease-out}@keyframes flash{0%{background:#173823}100%{background:#020504}}@keyframes shatter{0%{filter:brightness(1)}25%{filter:brightness(2.2) saturate(1.8)}100%{filter:brightness(1)}}@media(prefers-reduced-motion:reduce){.landerWrap{transition:none}.flash,.shatter{animation:none}}
 </style>
 </head>
 <body>
 <main>
-  <div class="eyebrow">HEADPHONES • ONE-BUTTON AUDIO SURVIVAL</div>
-  <h1 class="title">PARSEC FLUX <span style="font-size:.62em;color:#6aa77e;letter-spacing:.08em">v0.4.1</span></h1>
-  <p class="sub">Tap anywhere when the moving sound reaches the center of your head. Ten successful jumps completes a Movement. Each Movement adds one note to a growing ambient chord.</p>
-  <section id="stage" class="stage" role="button" tabindex="0" aria-label="Tap to jump">
+  <div class="eyebrow">HEADPHONES • CLIMB THE CHORD</div>
+  <h1 class="title">PARSEC FLUX <span>v0.5.0</span></h1>
+  <p class="sub">Catch each incoming chord tone at the center of your head. Miss once and the harmony collapses back to the root. Complete the 7th chord to break into the next sound world.</p>
+  <section id="stage" class="stage" role="button" tabindex="0" aria-label="Tap to catch the incoming note">
     <div class="stars"></div>
     <div class="hud">
-      <div>JUMPS<strong id="score">0</strong></div>
-      <div>LIVES<strong id="lives">3</strong></div>
-      <div>MOVEMENT<strong id="movement">I</strong></div>
-      <div>PARSEC FLUX<strong id="flux">1.0</strong></div>
+      <div>CATCHES<strong id="score">0</strong></div>
+      <div>HULL<strong id="lives">3</strong></div>
+      <div>LEVEL<strong id="movement">I</strong></div>
+      <div>CHORD<strong id="chordName">Cmaj7</strong></div>
     </div>
     <div id="lander" class="landerWrap" aria-hidden="true">
       <svg viewBox="0 0 200 180">
@@ -32,115 +32,57 @@
     </div>
     <div class="prompt"><b id="big">START</b><span id="small">The whole screen is the button</span></div>
   </section>
+  <div id="chord" class="chord"></div>
   <div class="progress"><i id="progress"></i></div>
   <div class="volume">
     <label for="volume">VOLUME</label>
     <input id="volume" type="range" min="0" max="150" step="1" value="100" aria-label="Game volume">
     <output id="volumeValue" for="volume">100%</output>
   </div>
-  <div id="status" class="status" aria-live="polite">Tap START to enter Movement I.</div>
-  <div class="footer">The harmony begins on C and blooms into a luminous C Lydian major sound.</div>
+  <div id="status" class="status" aria-live="polite">Tap START. The root note is your checkpoint.</div>
+  <div class="footer">Miss = chord collapse. Complete four-note 7th chords to descend deeper into Parsec Flux.</div>
 </main>
 <script>
 (() => {
-  const stage=document.getElementById('stage'),lander=document.getElementById('lander'),big=document.getElementById('big'),small=document.getElementById('small'),status=document.getElementById('status'),scoreEl=document.getElementById('score'),livesEl=document.getElementById('lives'),movementEl=document.getElementById('movement'),fluxEl=document.getElementById('flux'),progress=document.getElementById('progress'),volumeEl=document.getElementById('volume'),volumeValue=document.getElementById('volumeValue');
-  let ctx,master,limiter,hazardBus,hazardDelay,hazardFeedback,running=false,paused=false,score=0,lives=3,movement=1,movementJumps=0,hazards=[],timers=[],ambientNodes=[],nextId=1,startedAt=0;
-  const roman=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
-  const names=['Origin','Bloom','Drift','Mirage','Aurora','Threshold','Spiral','Radiance','Echo','Infinite'];
-  const harmony=[65.4064,97.9989,164.8138,246.9417,293.6648,369.9944,440,523.2511,659.2551,783.9909];
-  const label=n=>roman[n-1]||String(n);
-  let userVolume=Math.max(0,Math.min(150,Number(localStorage.getItem('parsecFluxVolume')||100)));
-  volumeEl.value=String(userVolume);volumeValue.textContent=Math.round(userVolume)+'%';
-
-  function applyVolume(){
-    userVolume=Math.max(0,Math.min(150,Number(volumeEl.value)));
-    volumeValue.textContent=Math.round(userVolume)+'%';
-    localStorage.setItem('parsecFluxVolume',String(userVolume));
-    if(master&&ctx) master.gain.setTargetAtTime((userVolume/100)*1.12,ctx.currentTime,.02);
-  }
-  volumeEl.addEventListener('input',applyVolume);
-  volumeEl.addEventListener('click',e=>e.stopPropagation());
-  volumeEl.addEventListener('pointerdown',e=>e.stopPropagation());
-
-  async function audio(){
-    if(!ctx){
-      ctx=new(window.AudioContext||window.webkitAudioContext)();
-      master=ctx.createGain();master.gain.value=(userVolume/100)*1.12;
-      limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-4;limiter.knee.value=5;limiter.ratio.value=10;limiter.attack.value=.003;limiter.release.value=.2;
-      master.connect(limiter);limiter.connect(ctx.destination);
-      hazardBus=ctx.createGain();hazardBus.gain.value=.95;
-      hazardDelay=ctx.createDelay(1.2);hazardDelay.delayTime.value=.31;
-      hazardFeedback=ctx.createGain();hazardFeedback.gain.value=.22;
-      hazardBus.connect(master);hazardBus.connect(hazardDelay);hazardDelay.connect(hazardFeedback);hazardFeedback.connect(hazardDelay);hazardDelay.connect(master);
-    }
-    if(ctx.state==='suspended')await ctx.resume();
-  }
-
-  function clearTimers(){timers.forEach(clearTimeout);timers=[]}
-  function stopAmbient(){ambientNodes.forEach(n=>{try{n.stop&&n.stop()}catch(e){}try{n.disconnect()}catch(e){}});ambientNodes=[]}
-
-  function buildAmbient(m){
-    stopAmbient();
-    const bus=ctx.createGain();bus.gain.value=.18;bus.connect(master);ambientNodes.push(bus);
-    const low=ctx.createBiquadFilter();low.type='lowpass';low.frequency.value=1250+m*80;low.Q.value=.55;low.connect(bus);ambientNodes.push(low);
-    const high=ctx.createBiquadFilter();high.type='highpass';high.frequency.value=38;high.connect(low);ambientNodes.push(high);
-    const delay=ctx.createDelay(2),fb=ctx.createGain(),wet=ctx.createGain();delay.delayTime.value=.72;fb.gain.value=.26;wet.gain.value=.3;low.connect(delay);delay.connect(fb);fb.connect(delay);delay.connect(wet);wet.connect(bus);ambientNodes.push(delay,fb,wet);
-
-    const count=Math.min(m,harmony.length);
-    for(let i=0;i<count;i++){
-      const base=harmony[i],group=ctx.createGain();group.gain.value=Math.max(.05,.13-i*.006);
-      const pan=ctx.createStereoPanner?ctx.createStereoPanner():null;
-      if(pan){pan.pan.value=count===1?0:-.6+(1.2*i/Math.max(1,count-1));group.connect(pan);pan.connect(high);ambientNodes.push(pan)}else group.connect(high);
-      [-7,0,7].forEach((det,j)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type=j===1?'sine':'triangle';o.frequency.value=base;o.detune.value=det;g.gain.value=j===1?.58:.28;o.connect(g);g.connect(group);o.start();ambientNodes.push(o,g)});
-      ambientNodes.push(group);
-    }
-
-    const shimmer=ctx.createOscillator(),shimmer2=ctx.createOscillator(),sg=ctx.createGain();
-    shimmer.type='sine';shimmer2.type='sine';shimmer.frequency.value=523.2511;shimmer2.frequency.value=526.4;sg.gain.value=.018+Math.min(.018,m*.0018);shimmer.connect(sg);shimmer2.connect(sg);sg.connect(low);shimmer.start();shimmer2.start();ambientNodes.push(shimmer,shimmer2,sg);
-
-    const lfo=ctx.createOscillator(),lfoDepth=ctx.createGain();lfo.type='sine';lfo.frequency.value=.035+.004*m;lfoDepth.gain.value=420;lfo.connect(lfoDepth);lfoDepth.connect(low.frequency);lfo.start();ambientNodes.push(lfo,lfoDepth);
-
-    const air=ctx.createBufferSource(),len=ctx.sampleRate*3,b=ctx.createBuffer(1,len,ctx.sampleRate),d=b.getChannelData(0);
-    for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*.11;
-    air.buffer=b;air.loop=true;
-    const af=ctx.createBiquadFilter(),ag=ctx.createGain();af.type='bandpass';af.frequency.value=2200+m*90;af.Q.value=.65;ag.gain.value=.014;air.connect(af);af.connect(ag);ag.connect(bus);air.start();ambientNodes.push(air,af,ag);
-  }
-
-  const elapsed=()=>running?(performance.now()-startedAt)/1000:0;
-  const flux=()=>1+movement*.85+elapsed()/8;
-  function ui(){scoreEl.textContent=score;livesEl.textContent=lives;movementEl.textContent=label(movement);fluxEl.textContent=flux().toFixed(1);progress.style.width=(movementJumps*10)+'%'}
-  function jumpVisual(){lander.classList.add('jump');stage.classList.add('flash');setTimeout(()=>{lander.classList.remove('jump');stage.classList.remove('flash')},180)}
-
-  function jumpTone(){
-    const now=ctx.currentTime;
-    [523.25,659.25,783.99].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=f;g.gain.value=.065;o.connect(g);g.connect(master);g.gain.exponentialRampToValueAtTime(.0001,now+.3+i*.04);o.start(now+i*.025);o.stop(now+.33+i*.04)});
-  }
-
-  function failSound(){
-    const o=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();o.type='triangle';o.frequency.setValueAtTime(110,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(48,ctx.currentTime+.5);f.type='lowpass';f.frequency.value=420;g.gain.value=.18;o.connect(f);f.connect(g);g.connect(master);g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.52);o.start();o.stop(ctx.currentTime+.54)
-  }
-
-  function hazard(duration,id,direction=1,pitch=120){
-    const start=ctx.currentTime+.05,end=start+duration,center=start+duration/2;
-    const bus=ctx.createGain();bus.gain.setValueAtTime(.0001,start);bus.gain.exponentialRampToValueAtTime(.28,center);bus.gain.exponentialRampToValueAtTime(.0001,end);
-    const p=ctx.createStereoPanner?ctx.createStereoPanner():null;
-    if(p){p.pan.setValueAtTime(direction,start);p.pan.linearRampToValueAtTime(-direction,end);bus.connect(p);p.connect(hazardBus)}else bus.connect(hazardBus);
-    const filter=ctx.createBiquadFilter();filter.type='bandpass';filter.Q.value=3.2;filter.frequency.setValueAtTime(380,start);filter.frequency.exponentialRampToValueAtTime(2100,center);filter.frequency.exponentialRampToValueAtTime(520,end);filter.connect(bus);
-    const toneA=ctx.createOscillator(),toneB=ctx.createOscillator(),toneC=ctx.createOscillator();
-    toneA.type='sine';toneB.type='sine';toneC.type='triangle';toneA.frequency.setValueAtTime(pitch,start);toneA.frequency.exponentialRampToValueAtTime(pitch*1.7,end);toneB.frequency.setValueAtTime(pitch*1.5,start);toneB.frequency.exponentialRampToValueAtTime(pitch*2.15,end);toneC.frequency.setValueAtTime(pitch*2.01,start);toneC.frequency.exponentialRampToValueAtTime(pitch*2.6,end);toneA.detune.value=-9;toneB.detune.value=7;toneC.detune.value=14;
-    const tg=ctx.createGain();tg.gain.value=.46;toneA.connect(tg);toneB.connect(tg);toneC.connect(tg);tg.connect(filter);toneA.start(start);toneB.start(start);toneC.start(start);toneA.stop(end+.05);toneB.stop(end+.05);toneC.stop(end+.05);
-    const nLen=Math.max(1,Math.floor(ctx.sampleRate*duration)),nb=ctx.createBuffer(1,nLen,ctx.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<nLen;i++){const x=i/nLen;nd[i]=(Math.random()*2-1)*Math.sin(Math.PI*x)*.12}const ns=ctx.createBufferSource(),ng=ctx.createGain();ns.buffer=nb;ng.gain.value=.24;ns.connect(ng);ng.connect(filter);ns.start(start);
-    const wob=ctx.createOscillator(),wd=ctx.createGain();wob.type='sine';wob.frequency.value=.7+Math.random()*1.5;wd.gain.value=120;wob.connect(wd);wd.connect(filter.frequency);wob.start(start);wob.stop(end);
-    const centerMs=(center-ctx.currentTime)*1000,windowMs=Math.max(135,430-movement*26);hazards.push({id,hit:false,center:performance.now()+centerMs,window:windowMs});timers.push(setTimeout(()=>{const h=hazards.find(x=>x.id===id);if(h&&!h.hit)miss(h)},centerMs+windowMs+70));
-  }
-
-  function miss(h){if(h.hit)return;h.hit=true;lives--;failSound();status.textContent='HIT.';ui();if(lives<=0)gameOver()}
-  function completeMovement(){paused=true;running=false;clearTimers();hazards=[];movement++;movementJumps=0;big.textContent='MOVEMENT '+label(movement)+' ACQUIRED';small.textContent=names[movement-1]||'Beyond';status.textContent='A new harmonic tone enters the composition.';buildAmbient(movement);ui();timers.push(setTimeout(()=>{big.textContent='LISTEN';small.textContent=movement===2?'Hazards can now arrive from either side.':movement>=3?'Multiple sounds may now overlap.':'The harmony is changing.'},1300));timers.push(setTimeout(()=>{paused=false;running=true;startedAt=performance.now();big.textContent='TAP TO JUMP';small.textContent='Eyes closed';status.textContent='Movement '+label(movement)+' · '+(names[movement-1]||'Beyond');scheduleWave()},3400))}
-  function tap(){if(paused)return;if(!running){startGame();return}jumpVisual();const now=performance.now(),candidates=hazards.filter(h=>!h.hit).map(h=>({h,delta:Math.abs(now-h.center)})).sort((a,b)=>a.delta-b.delta);if(!candidates.length)return;const c=candidates[0];if(c.delta<=c.h.window){c.h.hit=true;score++;movementJumps++;jumpTone();status.textContent='Jump '+movementJumps+'/10';ui();if(movementJumps>=10)completeMovement()}else status.textContent=c.h.center>now?'Too early.':'Too late.'}
-  function scheduleWave(){if(!running||paused||lives<=0)return;const duration=Math.max(.7,5.8-(movement-1)*.5-elapsed()*.012),direction=movement===1?1:(Math.random()<.5?1:-1);hazard(duration,nextId++,direction,96+Math.random()*34);if(movement>=3&&Math.random()<Math.min(.72,.2+(movement-3)*.1)){const gap=Math.max(350,1350-movement*105);timers.push(setTimeout(()=>{if(running&&!paused)hazard(Math.max(.62,duration*(.75+Math.random()*.16)),nextId++,-direction,128+Math.random()*42)},gap))}if(movement>=5&&Math.random()<.28){const gap2=Math.max(620,1700-movement*90);timers.push(setTimeout(()=>{if(running&&!paused)hazard(Math.max(.58,duration*.68),nextId++,Math.random()<.5?1:-1,155+Math.random()*55)},gap2))}const nextDelay=Math.max(850,4800-(movement-1)*390-elapsed()*10)+Math.random()*620;timers.push(setTimeout(scheduleWave,nextDelay));ui()}
-  async function startGame(){await audio();clearTimers();stopAmbient();score=0;lives=3;movement=1;movementJumps=0;hazards=[];running=true;paused=false;startedAt=performance.now();buildAmbient(movement);big.textContent='TAP TO JUMP';small.textContent='Close your eyes';status.textContent='Movement I · Origin';ui();timers.push(setTimeout(scheduleWave,1500))}
-  function gameOver(){running=false;clearTimers();big.textContent='AGAIN';small.textContent='Tap anywhere to restart';status.textContent='Game over — '+score+' jumps.'}
-  stage.addEventListener('click',tap);stage.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tap()}});setInterval(()=>{if(running)ui()},250);
+const $=id=>document.getElementById(id),stage=$('stage'),lander=$('lander'),big=$('big'),small=$('small'),status=$('status'),scoreEl=$('score'),livesEl=$('lives'),movementEl=$('movement'),chordNameEl=$('chordName'),progress=$('progress'),chordEl=$('chord'),volumeEl=$('volume'),volumeValue=$('volumeValue');
+const roman=['I','II','III','IV','V','VI','VII','VIII'];
+const levels=[
+ {name:'Cmaj7',notes:[130.81,164.81,196.00,246.94],labels:['C','E','G','B'],wave:'sine',cut:1450,delay:.72,wet:.25,dir:'rtl',dur:5.7,desc:'Origin · warm/open'},
+ {name:'Dmaj7♯11',notes:[146.83,184.997,220,277.18],labels:['D','F♯','A','C♯'],wave:'triangle',cut:2200,delay:.91,wet:.38,dir:'random',dur:5.2,desc:'Prism · luminous/Lydian'},
+ {name:'Am7',notes:[110,130.81,164.81,196],labels:['A','C','E','G'],wave:'sine',cut:980,delay:.58,wet:.42,dir:'random',dur:4.9,desc:'Undertow · dark/submerged'},
+ {name:'Fmaj7',notes:[130.81,174.61,220,261.63],labels:['F','A','C','E'],wave:'triangle',cut:1750,delay:1.05,wet:.48,dir:'alternate',dur:4.6,desc:'Halo · huge/dreamlike'},
+ {name:'Em7',notes:[82.41,98,123.47,146.83],labels:['E','G','B','D'],wave:'sawtooth',cut:1200,delay:.44,wet:.34,dir:'random',dur:4.25,desc:'Nightglass · alien/nocturnal'},
+ {name:'G7',notes:[98,123.47,146.83,174.61],labels:['G','B','D','F'],wave:'triangle',cut:2500,delay:.37,wet:.28,dir:'alternate',dur:4.0,desc:'Tension · unstable/echoing'},
+ {name:'Bm7♭5',notes:[123.47,146.83,174.61,220],labels:['B','D','F','A'],wave:'sine',cut:860,delay:.83,wet:.5,dir:'random',dur:3.8,desc:'Abyss · weightless/strange'},
+ {name:'Cmaj7♯11',notes:[130.81,164.81,246.94,369.99],labels:['C','E','B','F♯'],wave:'sine',cut:3200,delay:1.18,wet:.58,dir:'random',dur:3.6,desc:'Radiance · full spectrum'}
+];
+let ctx,master,limiter,hazardBus,hazardDelay,hazardFeedback,ambientBus,ambientFilter,ambientDelay,ambientWet,ambientFeedback,airNode;
+let running=false,paused=false,score=0,lives=3,level=0,step=0,hazard=null,timers=[],voices=[],nextDir=1;
+let userVolume=Math.max(0,Math.min(150,Number(localStorage.getItem('parsecFluxVolume')||100)));volumeEl.value=userVolume;volumeValue.textContent=Math.round(userVolume)+'%';
+function applyVolume(){userVolume=Math.max(0,Math.min(150,Number(volumeEl.value)));volumeValue.textContent=Math.round(userVolume)+'%';localStorage.setItem('parsecFluxVolume',userVolume);if(master&&ctx)master.gain.setTargetAtTime((userVolume/100)*1.12,ctx.currentTime,.02)}
+volumeEl.addEventListener('input',applyVolume);volumeEl.addEventListener('click',e=>e.stopPropagation());volumeEl.addEventListener('pointerdown',e=>e.stopPropagation());
+async function audio(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=(userVolume/100)*1.12;limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-4;limiter.knee.value=5;limiter.ratio.value=10;limiter.attack.value=.003;limiter.release.value=.22;master.connect(limiter);limiter.connect(ctx.destination);hazardBus=ctx.createGain();hazardBus.gain.value=.95;hazardDelay=ctx.createDelay(1.5);hazardFeedback=ctx.createGain();hazardFeedback.gain.value=.22;hazardBus.connect(master);hazardBus.connect(hazardDelay);hazardDelay.connect(hazardFeedback);hazardFeedback.connect(hazardDelay);hazardDelay.connect(master)}if(ctx.state==='suspended')await ctx.resume()}
+function clearTimers(){timers.forEach(clearTimeout);timers=[]}
+function current(){return levels[level%levels.length]}
+function stopVoices(){voices.forEach(v=>{try{v.o.stop()}catch(e){}try{v.o.disconnect();v.g.disconnect()}catch(e){}});voices=[]}
+function stopWorld(){stopVoices();[airNode,ambientBus,ambientFilter,ambientDelay,ambientWet,ambientFeedback].forEach(n=>{try{n&&n.stop&&n.stop()}catch(e){}try{n&&n.disconnect&&n.disconnect()}catch(e){}});airNode=null}
+function buildWorld(){stopWorld();const L=current();ambientBus=ctx.createGain();ambientBus.gain.value=.22;ambientFilter=ctx.createBiquadFilter();ambientFilter.type='lowpass';ambientFilter.frequency.value=L.cut;ambientFilter.Q.value=.6;ambientDelay=ctx.createDelay(1.5);ambientDelay.delayTime.value=L.delay;ambientWet=ctx.createGain();ambientWet.gain.value=L.wet;ambientFeedback=ctx.createGain();ambientFeedback.gain.value=Math.min(.42,.2+L.wet*.32);ambientFilter.connect(ambientBus);ambientFilter.connect(ambientDelay);ambientDelay.connect(ambientWet);ambientWet.connect(ambientBus);ambientDelay.connect(ambientFeedback);ambientFeedback.connect(ambientDelay);ambientBus.connect(master);const len=ctx.sampleRate*3,b=ctx.createBuffer(1,len,ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*.08;airNode=ctx.createBufferSource();airNode.buffer=b;airNode.loop=true;const af=ctx.createBiquadFilter(),ag=ctx.createGain();af.type='bandpass';af.frequency.value=900+level*260;af.Q.value=.7;ag.gain.value=.018;airNode.connect(af);af.connect(ag);ag.connect(ambientBus);airNode.start();addVoice(0,true)}
+function addVoice(index,instant=false){const L=current(),o=ctx.createOscillator(),g=ctx.createGain(),p=ctx.createStereoPanner?ctx.createStereoPanner():null;o.type=L.wave;o.frequency.value=L.notes[index];o.detune.value=(index-1.5)*3;g.gain.value=.0001;o.connect(g);if(p){g.connect(p);p.pan.value=-.45+(index*.3);p.connect(ambientFilter)}else g.connect(ambientFilter);const now=ctx.currentTime;g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(index===0?.12:.09,now+(instant?.08:1.8));o.start();voices.push({o,g,p,index})}
+function resetChord(){stopVoices();step=0;addVoice(0,true);renderChord()}
+function renderChord(){const L=current();chordEl.innerHTML=L.labels.map((n,i)=>`<div class="note ${i<=step?'on':''} ${i===step+1?'target':''}">${n}</div>`).join('');progress.style.width=(step/3*100)+'%';scoreEl.textContent=score;livesEl.textContent=lives;movementEl.textContent=roman[level]||String(level+1);chordNameEl.textContent=L.name}
+function jumpVisual(){lander.classList.add('jump');stage.classList.add('flash');setTimeout(()=>{lander.classList.remove('jump');stage.classList.remove('flash')},180)}
+function successTone(f){const now=ctx.currentTime;[1,2,3].forEach((m,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=f*m;g.gain.value=.05/(i+1);o.connect(g);g.connect(master);g.gain.exponentialRampToValueAtTime(.0001,now+.38+i*.08);o.start(now+i*.025);o.stop(now+.45+i*.08)})}
+function collapseSound(){const now=ctx.currentTime;voices.slice(1).forEach((v,i)=>{try{v.o.frequency.exponentialRampToValueAtTime(Math.max(28,v.o.frequency.value*.42),now+.7);v.g.gain.exponentialRampToValueAtTime(.0001,now+.75)}catch(e){}});const o=ctx.createOscillator(),g=ctx.createGain();o.type='sawtooth';o.frequency.setValueAtTime(180,now);o.frequency.exponentialRampToValueAtTime(42,now+.7);g.gain.value=.08;o.connect(g);g.connect(master);g.gain.exponentialRampToValueAtTime(.0001,now+.72);o.start();o.stop(now+.75)}
+function shatterSound(){const L=current(),now=ctx.currentTime;L.notes.forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain(),p=ctx.createStereoPanner?ctx.createStereoPanner():null;o.type=i%2?'triangle':'sine';o.frequency.value=f*2;g.gain.value=.045;o.connect(g);if(p){g.connect(p);p.pan.setValueAtTime((i%2?1:-1)*.15,now);p.pan.linearRampToValueAtTime(i%2?1:-1,now+1.1);p.connect(master)}else g.connect(master);o.frequency.exponentialRampToValueAtTime(f*(i%2?4:.5),now+1.15);g.gain.exponentialRampToValueAtTime(.0001,now+1.2);o.start(now+i*.03);o.stop(now+1.25)})}
+function direction(){const L=current();if(L.dir==='rtl')return 1;if(L.dir==='alternate'){nextDir*=-1;return nextDir}return Math.random()<.5?1:-1}
+function spawn(){if(!running||paused)return;const L=current(),targetIndex=step+1;if(targetIndex>3)return;const dur=Math.max(2.8,L.dur-step*.22),dir=direction(),pitch=L.notes[targetIndex],start=ctx.currentTime+.05,end=start+dur,center=start+dur/2;hazardDelay.delayTime.setTargetAtTime(L.delay*.34,ctx.currentTime,.05);hazardFeedback.gain.setTargetAtTime(.15+L.wet*.25,ctx.currentTime,.05);const bus=ctx.createGain();bus.gain.setValueAtTime(.0001,start);bus.gain.exponentialRampToValueAtTime(.30,center);bus.gain.exponentialRampToValueAtTime(.0001,end);const p=ctx.createStereoPanner?ctx.createStereoPanner():null;if(p){p.pan.setValueAtTime(dir,start);p.pan.linearRampToValueAtTime(-dir,end);bus.connect(p);p.connect(hazardBus)}else bus.connect(hazardBus);const f=ctx.createBiquadFilter();f.type=level%2?'bandpass':'lowpass';f.Q.value=2.4;f.frequency.setValueAtTime(500+level*80,start);f.frequency.exponentialRampToValueAtTime(2200+level*240,center);f.frequency.exponentialRampToValueAtTime(700,end);f.connect(bus);const os=[ctx.createOscillator(),ctx.createOscillator(),ctx.createOscillator()];os[0].type='sine';os[1].type=L.wave;os[2].type='triangle';os.forEach((o,i)=>{o.frequency.setValueAtTime(pitch*(1+i*.5),start);o.frequency.exponentialRampToValueAtTime(pitch*(1.1+i*.62),end);o.detune.value=[-8,7,14][i]});const tg=ctx.createGain();tg.gain.value=.34;os.forEach(o=>o.connect(tg));tg.connect(f);os.forEach(o=>{o.start(start);o.stop(end+.05)});hazard={center:performance.now()+(center-ctx.currentTime)*1000,window:Math.max(120,360-level*20-step*28),hit:false,targetIndex};timers.push(setTimeout(()=>{if(hazard&&!hazard.hit)miss()},(center-ctx.currentTime)*1000+hazard.window+55))}
+function miss(){if(!hazard||hazard.hit)return;hazard.hit=true;lives--;collapseSound();status.textContent='MISS — CHORD COLLAPSE';big.textContent='ROOT RESET';small.textContent=current().labels[0]+' survives';paused=true;clearTimers();timers.push(setTimeout(()=>{resetChord();paused=false;if(lives<=0){gameOver();return}big.textContent='CATCH '+current().labels[1];small.textContent=current().desc;status.textContent='Climb again from the root.';spawn()},900));renderChord()}
+function completeLevel(){paused=true;running=false;clearTimers();shatterSound();stage.classList.add('shatter');big.textContent=current().name+' COMPLETE';small.textContent='CHORD SHATTER';status.textContent='The sound world is breaking apart…';setTimeout(()=>stage.classList.remove('shatter'),900);timers.push(setTimeout(()=>{level=(level+1)%levels.length;step=0;lives=Math.min(3,lives+1);buildWorld();renderChord();big.textContent='LEVEL '+(roman[level]||level+1);small.textContent=current().desc;status.textContent=current().name+' · catch '+current().labels[1]+' next.'},1700));timers.push(setTimeout(()=>{paused=false;running=true;big.textContent='CATCH '+current().labels[1];small.textContent='Find the center';spawn()},3300))}
+function catchNote(){if(!hazard||hazard.hit)return;const d=Math.abs(performance.now()-hazard.center);if(d>hazard.window){status.textContent=performance.now()<hazard.center?'Too early.':'Too late.';return}hazard.hit=true;clearTimers();score++;step++;const idx=step;addVoice(idx);successTone(current().notes[idx]);renderChord();status.textContent=current().labels[idx]+' LOCKED · '+(4-(step+1))+' tone'+(4-(step+1)===1?'':'s')+' remaining';if(step>=3){completeLevel();return}big.textContent='CATCH '+current().labels[step+1];small.textContent='Chord '+(step+1)+'/4';timers.push(setTimeout(spawn,900))}
+function tap(){if(paused)return;if(!running){startGame();return}jumpVisual();catchNote()}
+async function startGame(){await audio();clearTimers();stopWorld();score=0;lives=3;level=0;step=0;hazard=null;running=true;paused=false;buildWorld();renderChord();big.textContent='CATCH '+current().labels[1];small.textContent=current().desc;status.textContent='Root locked: '+current().labels[0]+'. Catch the 3rd.';timers.push(setTimeout(spawn,1200))}
+function gameOver(){running=false;paused=false;clearTimers();big.textContent='AGAIN';small.textContent='Tap anywhere to restart';status.textContent='Hull gone — '+score+' successful catches.'}
+stage.addEventListener('click',tap);stage.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tap()}});renderChord();
 })();
 </script>
 </body>
