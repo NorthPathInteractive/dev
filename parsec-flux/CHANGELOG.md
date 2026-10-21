@@ -1,5 +1,18 @@
 # Parsec Flux Changelog
 
+## v0.6.0 — 2026-10-20
+- World one is Bloom: sample-based breathing pad, glass tones and an 80 BPM bass heartbeat.
+- Cmaj9 colour opens as the root, third, fifth and seventh are caught, with the ninth at completion.
+- Added rendered filter-bank-vocoded introductions for all eight sound worlds.
+- Misses play remaining-life pulses and robot announcements, including “One life remaining.”
+- Wait for announcements before incoming notes; duck the soundscape beneath speech.
+- Stop incoming audio on catches/misses and stop the world on game over.
+- Added audio loading/retry feedback, consistent version metadata and reproducible asset renderer.
+
+## v0.5.0 — 2026-10-20
+- Added chord-climb progression: catch the third, fifth and seventh; misses reset harmony to the root.
+- Completing a chord advances to the next sound world, with distinct harmonic and spatial effects.
+
 ## v0.4.1 — 2026-10-20
 - Added the current version number directly to the Parsec Flux title/header.
 - Updated the browser page title to include the current version.
