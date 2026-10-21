@@ -1,5 +1,9 @@
 # Parsec Flux Changelog
 
+## v0.4.1 — 2026-10-20
+- Added the current version number directly to the Parsec Flux title/header.
+- Updated the browser page title to include the current version.
+
 ## v0.4.0 — 2026-10-20
 - Increased overall game loudness at the source mix.
 - Raised ambient pad level substantially.
