@@ -1,5 +1,14 @@
 # Parsec Flux Changelog
 
+## v0.7.0 — 2026-10-21
+- All eight worlds now use rich sample pads, layered caught notes and tailored four-chord progressions.
+- Harmony changes at 16-beat boundaries (80 BPM), with smooth crossfades and matching bass foundations.
+- Seven additional seamless pad samples give each world its own timbre and spatial atmosphere.
+- Chord completion plays seven ascending triad inversions over three seconds, ending in a sustained chord.
+- The fanfare finishes before the next world's announcement and incoming notes.
+- All incoming tones use the glass sample; corrected Halo's pitches to match its F/A/C/E labels.
+- Preserved vocoded world introductions, life cues, volume controls and root-reset gameplay.
+
 ## v0.6.0 — 2026-10-20
 - World one is Bloom: sample-based breathing pad, glass tones and an 80 BPM bass heartbeat.
 - Cmaj9 colour opens as the root, third, fifth and seventh are caught, with the ninth at completion.
