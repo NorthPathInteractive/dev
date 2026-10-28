@@ -20,14 +20,14 @@ class AudioContext {
  async resume(){this.state='running'}
 }
 const elements=new Map();
-function el(id){if(!elements.has(id))elements.set(id,{value:100,style:{},classList:{add(){},remove(){}},addEventListener(){},textContent:''});return elements.get(id)}
+function el(id){if(!elements.has(id))elements.set(id,{value:100,style:{},classList:{add(){},remove(){}},handlers:{},focus(){},addEventListener(k,f){this.handlers[k]=f},textContent:''});return elements.get(id)}
 const sandbox=vm.createContext({console,window:{AudioContext},document:{getElementById:el},performance:{now:()=>now},localStorage:{getItem:()=>100,setItem(){}},
  setTimeout:(f,ms)=>later(f,ms),clearTimeout:id=>events.delete(id),setInterval:(f,ms)=>later(f,ms,ms),clearInterval:id=>events.delete(id),
  fetch:async url=>{fetches++;assert(fs.existsSync(path.join(root,url.split('?')[0])));return {ok:true,arrayBuffer:async()=>Buffer.from(url.split('/').pop().split('.mp3')[0])}}
 });
 vm.runInContext(fs.readFileSync(path.join(root,'bloom-audio.js'),'utf8')+'\nglobalThis.Engine=FluxAudio;globalThis.worlds=FLUX_WORLDS;',sandbox);
 let inline=fs.readFileSync(path.join(root,'index.html'),'utf8').split('<script>')[1].split('</script>')[0];
-inline=inline.replace('})();','globalThis.game={tap,catchNote,miss,gameOver,get state(){return {running,paused,score,lives,level,step,hazard,sampleAudio}},levels};})();');
+inline=inline.replace('})();','globalThis.game={tap,miss,gameOver,get state(){return {running,paused,score,lives,level,step,hazard,sampleAudio,jumpStarted}},levels};})();');
 vm.runInContext(inline,sandbox);
 async function flush(){for(let i=0;i<30;i++)await Promise.resolve()}
 async function advance(ms){
@@ -56,7 +56,9 @@ async function advance(ms){
  for(let world=0;world<8;world++){
   assert.equal(game.state.level,world);
   for(let tone=0;tone<3;tone++){
-   const hazard=game.state.hazard;assert(hazard&&!hazard.hit);await advance(hazard.center-now);game.catchNote();
+   const hazard=game.state.hazard;assert(hazard&&!hazard.hit);await advance(hazard.center-now-420);game.tap();
+   const started=game.state.jumpStarted;await advance(150);game.tap();assert.equal(game.state.jumpStarted,started);
+   assert.equal(game.state.step,tone);await advance(270);assert.equal(game.state.step,tone+1);
    if(tone<2)await advance(901);
   }
   assert(game.state.paused);assert(!game.state.running);assert.equal(game.state.sampleAudio.fanfareNodes.length,21);
@@ -64,10 +66,23 @@ async function advance(ms){
   await advance(2999);assert.equal(game.state.level,world);await advance(2);assert.equal(game.state.level,(world+1)%8);assert(game.state.paused);
   await advance(2001);assert(game.state.running);assert(!game.state.paused);
  }
- game.miss();await advance(2700);assert.equal(game.state.lives,2);assert.equal(game.state.step,0);
- game.miss();await advance(700);assert.equal(game.state.lives,1);assert.equal(game.state.sampleAudio.voice.o.buffer.name,'one-life');
- await advance(2000);game.miss();await advance(2700);assert(!game.state.running);assert.equal(game.state.sampleAudio.musicTimer,null);
- game.tap();await advance(3001);assert(game.state.running);game.gameOver();
+ // Early jump lands before the sound arrives: one collision, one lost life.
+ let hazard=game.state.hazard;game.tap();await advance(hazard.center-now);assert.equal(game.state.lives,2);
+ await advance(2700);assert.equal(game.state.step,0);assert(!game.state.paused);
+ // A jump only 40 ms before arrival is still too low to clear it.
+ hazard=game.state.hazard;await advance(hazard.center-now-40);game.tap();await advance(40);
+ assert.equal(game.state.lives,1);await advance(700);assert.equal(game.state.sampleAudio.voice.o.buffer.name,'one-life');
+ await advance(2000);
+ // No jump also collides; taps during the announcement cannot save it.
+ hazard=game.state.hazard;await advance(hazard.center-now);assert.equal(game.state.lives,0);
+ game.tap();await advance(2700);assert(!game.state.running);assert.equal(game.state.sampleAudio.musicTimer,null);
+ game.tap();await advance(3001);assert(game.state.running);
+ // Real input handlers: held keys, secondary pointers, and repeated taps.
+ const stage=el('stage'),key=stage.handlers.keydown,pointer=stage.handlers.pointerdown;
+ key({key:' ',repeat:true,preventDefault(){}});assert.equal(game.state.jumpStarted,-Infinity);
+ pointer({isPrimary:false,button:0});assert.equal(game.state.jumpStarted,-Infinity);
+ pointer({isPrimary:true,button:0,preventDefault(){}});assert(Number.isFinite(game.state.jumpStarted));
+ game.gameOver();assert.equal(game.state.jumpStarted,-Infinity);
  assert.equal([...events.values()].filter(e=>e.interval).length,0);
- console.log('PASS: all 8 sample pads, 16-beat progression timing and wrap, chord reset, 21 rising fanfare voices / 3 seconds, all 8 world transitions, input lock, announcements, life cues, game-over cleanup and restart.');
+ console.log('PASS: all 8 sample pads, 16-beat progression timing and wrap, chord reset, 21 rising fanfare voices / 3 seconds, all 8 world transitions, timed jumps, early/late/no-jump collisions, anti-spam, touch/held-key input, announcements, life cues, game-over cleanup and restart.');
 })().catch(error=>{console.error(error);process.exitCode=1});

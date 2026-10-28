@@ -1,5 +1,12 @@
 # Parsec Flux Changelog
 
+## v0.70 — 2026-10-27
+- Jump over incoming sounds: tap before they reach center and clear them while airborne.
+- Added an 840 ms jump arc, takeoff audio, and collision checks at the sound crossing.
+- Holding a key or tapping while airborne cannot retrigger the jump.
+- Touch takeoff responds on pointer down; keyboard and assistive activation supported.
+- Cleared sounds build the chord; all eight pads, progressions, life cues and completion fanfares remain.
+
 ## v0.7.0 — 2026-10-21
 - All eight worlds now use rich sample pads, layered caught notes and tailored four-chord progressions.
 - Harmony changes at 16-beat boundaries (80 BPM), with smooth crossfades and matching bass foundations.
