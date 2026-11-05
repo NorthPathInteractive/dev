@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<title>Parsec Flux v0.70 — Jump the Sound</title>
+<title>Parsec Flux v0.71 — Jump the Sound</title>
 <style>
 :root{color-scheme:dark}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;background:#020504;color:#d7ffe6;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-height:100%}body{display:flex;justify-content:center}main{width:100%;max-width:720px;min-height:100dvh;padding:16px;display:flex;flex-direction:column;gap:12px}.eyebrow{font-size:12px;letter-spacing:.18em;color:#6aa77e}.title{font-size:19px;letter-spacing:.14em;margin:0}.title span{font-size:.62em;color:#6aa77e;letter-spacing:.08em}.sub{font-size:13px;line-height:1.45;color:#7ea98d;margin:0}.stage{position:relative;min-height:460px;border:1px solid #1b3b28;border-radius:20px;background:radial-gradient(circle at 50% 52%,#07140d 0,#020504 62%);overflow:hidden;touch-action:manipulation;transition:background 1.5s ease,border-color 1.5s ease}.stars{position:absolute;inset:0;background-image:radial-gradient(#4b7d5c 1px,transparent 1px);background-size:38px 38px;opacity:.18}.hud{position:absolute;inset:14px 14px auto 14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;z-index:3}.hud div{text-align:center;font-size:10px;letter-spacing:.1em;color:#6aa77e}.hud strong{display:block;margin-top:3px;font-size:16px;color:#caffd9}.landerWrap{position:absolute;left:50%;top:54%;width:190px;height:180px;transform:translate(-50%,-50%);transition:transform .12s ease-out;z-index:2}.landerWrap.jump{animation:jumpArc .84s linear}@keyframes jumpArc{0%,100%{transform:translate(-50%,-50%)}25%,75%{transform:translate(-50%,calc(-50% - 66px))}50%{transform:translate(-50%,calc(-50% - 88px))}}svg{width:100%;height:100%;overflow:visible}.vec{fill:none;stroke:#b7ffd0;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px rgba(183,255,208,.35))}.thruster{opacity:0}.jump .thruster{opacity:1}.prompt{position:absolute;left:0;right:0;bottom:34px;text-align:center;z-index:3}.prompt b{display:block;font-size:25px;letter-spacing:.08em}.prompt span{display:block;margin-top:5px;color:#6aa77e;font-size:12px}.chord{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.note{min-width:48px;text-align:center;border:1px solid #173421;border-radius:10px;padding:7px 8px;color:#52715f;background:#040a06;transition:.35s ease}.note.on{color:#d8ffe5;border-color:#69c486;box-shadow:0 0 18px rgba(105,196,134,.16);background:#07150c}.note.target{border-color:#b9ffd0;color:#b9ffd0}.status{min-height:22px;font-size:13px;color:#91c6a1}.progress{height:4px;background:#0c1b12;border-radius:99px;overflow:hidden}.progress>i{display:block;height:100%;width:0;background:#8ef7ad;transition:width .3s}.volume{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid #173421;border-radius:14px;background:#050b07}.volume label{font-size:11px;letter-spacing:.12em;color:#79a989}.volume output{min-width:42px;text-align:right;font-size:12px;color:#caffd9}.volume input{width:100%;accent-color:#8ef7ad;touch-action:manipulation}.footer{font-size:11px;color:#547261;text-align:center}.flash{animation:flash .26s ease-out}.shatter{animation:shatter .9s ease-out}@keyframes flash{0%{background:#173823}100%{background:#020504}}@keyframes shatter{0%{filter:brightness(1)}25%{filter:brightness(2.2) saturate(1.8)}100%{filter:brightness(1)}}@media(prefers-reduced-motion:reduce){.landerWrap{transition:none}.landerWrap.jump{animation:none;transform:translate(-50%,calc(-50% - 88px))}.flash,.shatter{animation:none}}
 </style>
@@ -11,7 +11,7 @@
 <body>
 <main>
   <div class="eyebrow">HEADPHONES • JUMP THE SOUND</div>
-  <h1 class="title">PARSEC FLUX <span>v0.70</span></h1>
+  <h1 class="title">PARSEC FLUX <span>v0.71</span></h1>
   <p class="sub">Hear the tone travel toward the center, then tap just before it arrives to jump over it. Each jump lasts a moment: clear the sound while airborne to build the chord. Jump too early or too late and lose a life. Headphones recommended. World one: Bloom.</p>
   <section id="stage" class="stage" role="button" tabindex="0" aria-label="Tap to jump over the incoming sound">
     <div class="stars"></div>
@@ -64,7 +64,8 @@ let jumpStarted=-Infinity,jumpTimer=null;
 let userVolume=Math.max(0,Math.min(150,Number(localStorage.getItem('parsecFluxVolume')||100)));volumeEl.value=userVolume;volumeValue.textContent=Math.round(userVolume)+'%';
 function applyVolume(){userVolume=Math.max(0,Math.min(150,Number(volumeEl.value)));volumeValue.textContent=Math.round(userVolume)+'%';localStorage.setItem('parsecFluxVolume',userVolume);if(master&&ctx)master.gain.setTargetAtTime((userVolume/100)*1.12,ctx.currentTime,.02)}
 volumeEl.addEventListener('input',applyVolume);volumeEl.addEventListener('click',e=>e.stopPropagation());volumeEl.addEventListener('pointerdown',e=>e.stopPropagation());
-async function audio(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=(userVolume/100)*1.12;limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-4;limiter.knee.value=5;limiter.ratio.value=10;limiter.attack.value=.003;limiter.release.value=.22;master.connect(limiter);limiter.connect(ctx.destination);hazardBus=ctx.createGain();hazardBus.gain.value=.95;hazardDelay=ctx.createDelay(1.5);hazardFeedback=ctx.createGain();hazardFeedback.gain.value=.22;hazardBus.connect(master);hazardBus.connect(hazardDelay);hazardDelay.connect(hazardFeedback);hazardFeedback.connect(hazardDelay);hazardDelay.connect(master)}if(ctx.state==='suspended')await ctx.resume()}
+async function withTimeout(work,ms){let timer;try{return await Promise.race([work,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Audio preparation timed out')),ms)})])}finally{clearTimeout(timer)}}
+async function audio(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=(userVolume/100)*1.12;limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-4;limiter.knee.value=5;limiter.ratio.value=10;limiter.attack.value=.003;limiter.release.value=.22;master.connect(limiter);limiter.connect(ctx.destination);hazardBus=ctx.createGain();hazardBus.gain.value=.95;hazardDelay=ctx.createDelay(1.5);hazardFeedback=ctx.createGain();hazardFeedback.gain.value=.22;hazardBus.connect(master);hazardBus.connect(hazardDelay);hazardDelay.connect(hazardFeedback);hazardFeedback.connect(hazardDelay);hazardDelay.connect(master)}if(ctx.state!=='running')await withTimeout(ctx.resume(),5000)}
 function clearTimers(){timers.forEach(clearTimeout);timers=[]}
 function current(){return levels[level%levels.length]}
 function stopWorld(){if(sampleAudio)sampleAudio.stopWorld()}
@@ -145,7 +146,7 @@ function tap(){if(paused)return;if(!running){startGame();return}jump()}
 async function startGame(){
  paused=true;big.textContent='LOADING BLOOM';status.textContent='Preparing soundscape…';
  try{
-   await audio();if(!sampleAudio)sampleAudio=new FluxAudio(ctx,master);await sampleAudio.load();
+   await audio();if(!sampleAudio)sampleAudio=new FluxAudio(ctx,master);await withTimeout(sampleAudio.load(),30000);
    clearTimers();stopHazard();resetJump();stopWorld();score=0;lives=3;level=0;step=0;hazard=null;running=false;
    buildWorld();renderChord();big.textContent='BLOOM';small.textContent='WORLD ONE · Cmaj9';
    status.textContent='World one. Bloom.';await sampleAudio.announce('world-1');
@@ -156,8 +157,10 @@ async function startGame(){
  }
 }
 function gameOver(){running=false;paused=false;clearTimers();stopHazard();resetJump();stopWorld();big.textContent='AGAIN';small.textContent='Tap anywhere to restart';status.textContent='Hull gone — '+score+' sounds cleared.'}
-stage.addEventListener('pointerdown',e=>{if(!e.isPrimary||e.button!==0)return;e.preventDefault();stage.focus();tap()});
-stage.addEventListener('click',e=>{if(e.detail===0)tap()});
+// Start on click: touch pointerdown is not an audio-unlock gesture on iOS.
+// During play use pointerdown for immediate jumps; ignore its following click.
+stage.addEventListener('pointerdown',e=>{if(!e.isPrimary||e.button!==0||!running||paused)return;e.preventDefault();stage.focus();tap()});
+stage.addEventListener('click',e=>{if(!running||e.detail===0)tap()});
 stage.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(!e.repeat)tap()}});renderChord();
 })();
 </script>

@@ -1,6 +1,7 @@
 /* Deterministic audio-clock integration checks; no browser or packages required. */
 const vm=require('node:vm'),fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..');
+let stallResume=false;
 let now=0,serial=0,events=new Map(),sources=[],fetches=0;
 const later=(fn,ms=0,interval=0)=>{const id=++serial;events.set(id,{fn,at:now+ms,interval});return id};
 function param(value=0){return {value,history:[],setValueAtTime(v,t){this.value=v;this.history.push([t,v])},linearRampToValueAtTime(v,t){this.value=v;this.history.push([t,v])},exponentialRampToValueAtTime(v,t){this.value=v;this.history.push([t,v])},setTargetAtTime(v,t){this.value=v;this.history.push([t,v])},cancelScheduledValues(){},cancelAndHoldAtTime(){}}}
@@ -12,12 +13,12 @@ class AudioNode {
  end(){if(this.stopped)return;this.stopped=true;this.onended?.();this.handlers.ended?.()}
 }
 class AudioContext {
- constructor(){this.sampleRate=32000;this.state='running';this.destination=new AudioNode()}
+ constructor(){this.sampleRate=32000;this.state=stallResume?'suspended':'running';this.destination=new AudioNode()}
  get currentTime(){return now/1000}
  createGain(){return new AudioNode()}createBiquadFilter(){return new AudioNode()}createDelay(){return new AudioNode()}
  createStereoPanner(){return new AudioNode()}createBufferSource(){return new AudioNode()}createOscillator(){return new AudioNode()}createDynamicsCompressor(){return new AudioNode()}
  async decodeAudioData(buffer){const name=Buffer.from(buffer).toString();return {name,duration:/pad-c3|bloom-glass|heartbeat/.test(name)?12:2}}
- async resume(){this.state='running'}
+ async resume(){if(stallResume)return new Promise(()=>{});this.state='running'}
 }
 const elements=new Map();
 function el(id){if(!elements.has(id))elements.set(id,{value:100,style:{},classList:{add(){},remove(){}},handlers:{},focus(){},addEventListener(k,f){this.handlers[k]=f},textContent:''});return elements.get(id)}
@@ -52,7 +53,13 @@ async function advance(ms){
   await advance(2999);assert(!finished);await advance(1);assert(finished);
   engine.stopWorld();assert.equal(engine.musicTimer,null);assert.equal(engine.worldNodes.length,0);
  }
- const game=sandbox.game;game.tap();game.tap();await flush();assert(game.state.paused);await advance(3001);assert(game.state.running);
+ const game=sandbox.game;
+ const input=el('stage').handlers;
+ input.pointerdown({isPrimary:true,button:0,preventDefault(){throw new Error('Start touch must allow click')}});
+ assert(!game.state.paused);assert(!game.state.sampleAudio);
+ stallResume=true;input.click({detail:1});await flush();assert(game.state.paused);
+ await advance(5001);assert(!game.state.paused);assert.equal(el('big').textContent,'RETRY');
+ stallResume=false;input.click({detail:1});game.tap();await flush();assert(game.state.paused);await advance(3001);assert(game.state.running);
  for(let world=0;world<8;world++){
   assert.equal(game.state.level,world);
   for(let tone=0;tone<3;tone++){

@@ -1,5 +1,10 @@
 # Parsec Flux Changelog
 
+## v0.71 — 2026-11-04
+- Start and restart audio from a completed tap, allowing iPhone browsers to unlock audio.
+- Keep immediate touch-down jumps during gameplay without firing twice.
+- Add audio-unlock and asset-loading timeouts so a stalled start offers Retry.
+
 ## v0.70 — 2026-10-27
 - Jump over incoming sounds: tap before they reach center and clear them while airborne.
 - Added an 840 ms jump arc, takeoff audio, and collision checks at the sound crossing.
