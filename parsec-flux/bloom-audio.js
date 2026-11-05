@@ -69,7 +69,8 @@ class FluxAudio {
   else{node.g.gain.cancelScheduledValues(at);node.g.gain.setValueAtTime(node.g.gain.value,at)}
   node.g.gain.linearRampToValueAtTime(0,at+duration);try{node.o.stop(at+duration+.02)}catch{}
  }
- resetChord(){}
+ holdNote(index){this.pads.push(this.pad(this.notes[index],.045,this.ctx.currentTime,.12))}
+ resetChord(){this.pads.splice(0).forEach(n=>this.fadeOut(n,this.ctx.currentTime,.2))}
  glass(frequency,duration,panStart=0,panEnd=panStart,target=this.master){
   const node=this.source('bloom-glass-c5',0,target,frequency/523.251),pan=this.ctx.createStereoPanner(),now=this.ctx.currentTime;
   node.g.disconnect();node.g.connect(pan);pan.connect(target);
@@ -92,9 +93,10 @@ class FluxAudio {
  completion(){
   clearInterval(this.musicTimer);this.musicTimer=null;
   const now=this.ctx.currentTime;
-  this.worldGain.gain.cancelScheduledValues(now);this.worldGain.gain.setTargetAtTime(.40,now,.08);
+  this.worldGain.gain.cancelScheduledValues(now);this.worldGain.gain.setTargetAtTime(.85,now,.08);
   // Reveal the completed target chord only after the last landing.
   this.harmony.forEach(n=>this.fadeOut(n,now,.08));this.harmony=[];
+  this.resetChord();
   this.pads=this.notes.map(f=>this.pad(f,.15,now,.06));
   this.pads.forEach(n=>this.fadeOut(n,now+1.8,1.2));
   // Seven ascending triad inversions, with the final chord ringing to three seconds.

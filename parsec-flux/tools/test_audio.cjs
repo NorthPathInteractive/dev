@@ -45,7 +45,9 @@ async function advance(ms){
   const epoch=now,first=engine.harmony[0];await advance(11800);assert.equal(engine.harmony[0],first);
   await advance(100);assert.notEqual(engine.harmony[0],first);assert.equal(engine.harmony[0].o.startTime,(epoch+12000)/1000);
   await advance(12100);assert.equal(engine.phrase,2);await advance(12000);assert.equal(engine.phrase,3);await advance(12000);assert.equal(engine.phrase,4);
-  engine.resetChord();assert.equal(engine.pads.length,0);
+  engine.holdNote(0);engine.holdNote(1);assert.equal(engine.pads.length,2);
+  const held=engine.pads.slice();assert(held.every(n=>n.g.gain.value===.045));
+  engine.resetChord();assert.equal(engine.pads.length,0);await advance(221);assert(held.every(n=>n.o.stopped));
   const jumpAt=now/1000;engine.jumpFeedback(.84);
   assert.equal(engine.jumpNodes.length,2);
   assert.equal(engine.jumpNodes[0].o.startTime,jumpAt);
@@ -68,16 +70,17 @@ async function advance(ms){
  stallResume=false;input.click({detail:1});game.tap();await flush();assert(game.state.paused);await advance(3001);assert(game.state.running);
  for(let world=0;world<8;world++){
   assert.equal(game.state.level,world);
-  for(let tone=0;tone<3;tone++){
-   const hazard=game.state.hazard;assert(hazard&&!hazard.hit);await advance(hazard.center-now-420);game.tap();
+  for(let tone=0;tone<4;tone++){
+   const hazard=game.state.hazard;assert(hazard&&!hazard.hit);assert.equal(hazard.targetIndex,tone);await advance(hazard.center-now-420);game.tap();
    const started=game.state.jumpStarted;await advance(150);game.tap();assert.equal(game.state.jumpStarted,started);
    assert.equal(game.state.step,tone);await advance(270);assert.equal(game.state.step,tone+1);
-   assert.equal(game.state.sampleAudio.pads.length,0);
-   if(tone<2)await advance(901);
+   assert.equal(game.state.sampleAudio.pads.length,tone+1);
+   assert(game.state.sampleAudio.pads.every(n=>n.g.gain.value===.045));
+   if(tone<3)await advance(901);
   }
   assert(game.state.paused);assert(!game.state.running);
   assert.equal(game.state.sampleAudio.fanfareNodes.length,0);
-  await advance(599);assert.equal(game.state.sampleAudio.pads.length,0);
+  await advance(599);assert.equal(game.state.sampleAudio.pads.length,4);assert(game.state.sampleAudio.pads.every(n=>n.g.gain.value===.045));
   await advance(1);assert.equal(game.state.sampleAudio.pads.length,4);assert.equal(game.state.sampleAudio.fanfareNodes.length,21);
   const score=game.state.score;game.tap();assert.equal(game.state.score,score);
   await advance(2999);assert.equal(game.state.level,world);await advance(2);assert.equal(game.state.level,(world+1)%8);assert(game.state.paused);
@@ -101,5 +104,5 @@ async function advance(ms){
  pointer({isPrimary:true,button:0,preventDefault(){}});assert(Number.isFinite(game.state.jumpStarted));
  game.gameOver();assert.equal(game.state.jumpStarted,-Infinity);
  assert.equal([...events.values()].filter(e=>e.interval).length,0);
- console.log('PASS: takeoff/landing audio scheduling, isolated incoming notes, full chord only after landing, all 8 sample pads, 16-beat progression timing and wrap, chord reset, 21 rising fanfare voices / 3 seconds, all 8 world transitions, timed jumps, early/late/no-jump collisions, anti-spam, touch/held-key input, announcements, life cues, game-over cleanup and restart.');
+ console.log('PASS: takeoff/landing audio scheduling, four playable notes from the root, quiet retained pads, completed chord after landing, all 8 sample pads, 16-beat progression timing and wrap, chord reset, 21 rising fanfare voices / 3 seconds, all 8 world transitions, timed jumps, early/late/no-jump collisions, anti-spam, touch/held-key input, announcements, life cues, game-over cleanup and restart.');
 })().catch(error=>{console.error(error);process.exitCode=1});

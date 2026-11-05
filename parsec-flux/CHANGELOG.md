@@ -1,5 +1,11 @@
 # Parsec Flux Changelog
 
+## v0.73 — 2026-11-04
+- Play all four notes as jump targets, beginning with the root.
+- Cleared notes continue as quiet sampled pads beneath the next incoming note.
+- Raise the completed chord to reward volume after the fourth landing.
+- Reset all cleared tones on a miss; progress now tracks four jumps per world.
+
 ## v0.72 — 2026-11-04
 - Distinct rising takeoff and low landing cues, scheduled on the audio clock.
 - Incoming notes play separately, without accumulating held tones or replaying cleared notes.
