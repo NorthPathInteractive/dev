@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<title>Parsec Flux v0.71 — Jump the Sound</title>
+<title>Parsec Flux v0.72 — Jump the Sound</title>
 <style>
 :root{color-scheme:dark}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;background:#020504;color:#d7ffe6;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-height:100%}body{display:flex;justify-content:center}main{width:100%;max-width:720px;min-height:100dvh;padding:16px;display:flex;flex-direction:column;gap:12px}.eyebrow{font-size:12px;letter-spacing:.18em;color:#6aa77e}.title{font-size:19px;letter-spacing:.14em;margin:0}.title span{font-size:.62em;color:#6aa77e;letter-spacing:.08em}.sub{font-size:13px;line-height:1.45;color:#7ea98d;margin:0}.stage{position:relative;min-height:460px;border:1px solid #1b3b28;border-radius:20px;background:radial-gradient(circle at 50% 52%,#07140d 0,#020504 62%);overflow:hidden;touch-action:manipulation;transition:background 1.5s ease,border-color 1.5s ease}.stars{position:absolute;inset:0;background-image:radial-gradient(#4b7d5c 1px,transparent 1px);background-size:38px 38px;opacity:.18}.hud{position:absolute;inset:14px 14px auto 14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;z-index:3}.hud div{text-align:center;font-size:10px;letter-spacing:.1em;color:#6aa77e}.hud strong{display:block;margin-top:3px;font-size:16px;color:#caffd9}.landerWrap{position:absolute;left:50%;top:54%;width:190px;height:180px;transform:translate(-50%,-50%);transition:transform .12s ease-out;z-index:2}.landerWrap.jump{animation:jumpArc .84s linear}@keyframes jumpArc{0%,100%{transform:translate(-50%,-50%)}25%,75%{transform:translate(-50%,calc(-50% - 66px))}50%{transform:translate(-50%,calc(-50% - 88px))}}svg{width:100%;height:100%;overflow:visible}.vec{fill:none;stroke:#b7ffd0;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px rgba(183,255,208,.35))}.thruster{opacity:0}.jump .thruster{opacity:1}.prompt{position:absolute;left:0;right:0;bottom:34px;text-align:center;z-index:3}.prompt b{display:block;font-size:25px;letter-spacing:.08em}.prompt span{display:block;margin-top:5px;color:#6aa77e;font-size:12px}.chord{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.note{min-width:48px;text-align:center;border:1px solid #173421;border-radius:10px;padding:7px 8px;color:#52715f;background:#040a06;transition:.35s ease}.note.on{color:#d8ffe5;border-color:#69c486;box-shadow:0 0 18px rgba(105,196,134,.16);background:#07150c}.note.target{border-color:#b9ffd0;color:#b9ffd0}.status{min-height:22px;font-size:13px;color:#91c6a1}.progress{height:4px;background:#0c1b12;border-radius:99px;overflow:hidden}.progress>i{display:block;height:100%;width:0;background:#8ef7ad;transition:width .3s}.volume{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid #173421;border-radius:14px;background:#050b07}.volume label{font-size:11px;letter-spacing:.12em;color:#79a989}.volume output{min-width:42px;text-align:right;font-size:12px;color:#caffd9}.volume input{width:100%;accent-color:#8ef7ad;touch-action:manipulation}.footer{font-size:11px;color:#547261;text-align:center}.flash{animation:flash .26s ease-out}.shatter{animation:shatter .9s ease-out}@keyframes flash{0%{background:#173823}100%{background:#020504}}@keyframes shatter{0%{filter:brightness(1)}25%{filter:brightness(2.2) saturate(1.8)}100%{filter:brightness(1)}}@media(prefers-reduced-motion:reduce){.landerWrap{transition:none}.landerWrap.jump{animation:none;transform:translate(-50%,calc(-50% - 88px))}.flash,.shatter{animation:none}}
 </style>
@@ -11,8 +11,8 @@
 <body>
 <main>
   <div class="eyebrow">HEADPHONES • JUMP THE SOUND</div>
-  <h1 class="title">PARSEC FLUX <span>v0.71</span></h1>
-  <p class="sub">Hear the tone travel toward the center, then tap just before it arrives to jump over it. Each jump lasts a moment: clear the sound while airborne to build the chord. Jump too early or too late and lose a life. Headphones recommended. World one: Bloom.</p>
+  <h1 class="title">PARSEC FLUX <span>v0.72</span></h1>
+  <p class="sub">Hear the tone travel toward the center, then tap just before it arrives to jump over it. Each jump lasts a moment: clear each sound while airborne. Hear a rising takeoff cue and a low landing thump. Notes play separately; the full chord sounds only when you finish the level. Jump too early or too late and lose a life. Headphones recommended. World one: Bloom.</p>
   <section id="stage" class="stage" role="button" tabindex="0" aria-label="Tap to jump over the incoming sound">
     <div class="stars"></div>
     <div class="hud">
@@ -42,7 +42,7 @@
   <div id="status" class="status" aria-live="polite">Tap START. Listen for the center, then jump just before the sound reaches you.</div>
   <div class="footer">Tap, Space or Enter = jump. Clear three sounds to complete each chord. Miss = lose a life and reset to the root.</div>
 </main>
-<script src="bloom-audio.js?v=0.7.0"></script>
+<script src="bloom-audio.js?v=0.72"></script>
 <script>
 (() => {
 const $=id=>document.getElementById(id),stage=$('stage'),lander=$('lander'),big=$('big'),small=$('small'),status=$('status'),scoreEl=$('score'),livesEl=$('lives'),movementEl=$('movement'),chordNameEl=$('chordName'),progress=$('progress'),chordEl=$('chord'),volumeEl=$('volume'),volumeValue=$('volumeValue');
@@ -57,7 +57,7 @@ const levels=[
  {world:'Abyss',name:'Bm7♭5',notes:[123.47,146.83,174.61,220],labels:['B','D','F','A'],wave:'sine',cut:860,delay:.83,wet:.5,dir:'random',dur:3.8,desc:'Abyss · weightless/strange'},
  {world:'Radiance',name:'Cmaj7♯11',notes:[130.81,164.81,246.94,369.99],labels:['C','E','B','F♯'],wave:'sine',cut:3200,delay:1.18,wet:.58,dir:'random',dur:3.6,desc:'Radiance · full spectrum'}
 ];
-let sampleAudio,ctx,master,limiter,hazardBus,hazardDelay,hazardFeedback;
+let sampleAudio,ctx,master,limiter,hazardBus;
 let running=false,paused=false,score=0,lives=3,level=0,step=0,hazard=null,timers=[],nextDir=1;
 const JUMP_MS=840;
 let jumpStarted=-Infinity,jumpTimer=null;
@@ -65,12 +65,11 @@ let userVolume=Math.max(0,Math.min(150,Number(localStorage.getItem('parsecFluxVo
 function applyVolume(){userVolume=Math.max(0,Math.min(150,Number(volumeEl.value)));volumeValue.textContent=Math.round(userVolume)+'%';localStorage.setItem('parsecFluxVolume',userVolume);if(master&&ctx)master.gain.setTargetAtTime((userVolume/100)*1.12,ctx.currentTime,.02)}
 volumeEl.addEventListener('input',applyVolume);volumeEl.addEventListener('click',e=>e.stopPropagation());volumeEl.addEventListener('pointerdown',e=>e.stopPropagation());
 async function withTimeout(work,ms){let timer;try{return await Promise.race([work,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Audio preparation timed out')),ms)})])}finally{clearTimeout(timer)}}
-async function audio(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=(userVolume/100)*1.12;limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-4;limiter.knee.value=5;limiter.ratio.value=10;limiter.attack.value=.003;limiter.release.value=.22;master.connect(limiter);limiter.connect(ctx.destination);hazardBus=ctx.createGain();hazardBus.gain.value=.95;hazardDelay=ctx.createDelay(1.5);hazardFeedback=ctx.createGain();hazardFeedback.gain.value=.22;hazardBus.connect(master);hazardBus.connect(hazardDelay);hazardDelay.connect(hazardFeedback);hazardFeedback.connect(hazardDelay);hazardDelay.connect(master)}if(ctx.state!=='running')await withTimeout(ctx.resume(),5000)}
+async function audio(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.gain.value=(userVolume/100)*1.12;limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-4;limiter.knee.value=5;limiter.ratio.value=10;limiter.attack.value=.003;limiter.release.value=.22;master.connect(limiter);limiter.connect(ctx.destination);hazardBus=ctx.createGain();hazardBus.gain.value=.95;hazardBus.connect(master)}if(ctx.state!=='running')await withTimeout(ctx.resume(),5000)}
 function clearTimers(){timers.forEach(clearTimeout);timers=[]}
 function current(){return levels[level%levels.length]}
 function stopWorld(){if(sampleAudio)sampleAudio.stopWorld()}
 function buildWorld(){sampleAudio.startWorld(level,current().notes)}
-function addVoice(index){sampleAudio.addPad(index)}
 function resetChord(){step=0;sampleAudio.resetChord();renderChord()}
 function renderChord(){const L=current();chordEl.innerHTML=L.labels.map((n,i)=>`<div class="note ${i<=step?'on':''} ${i===step+1?'target':''}">${n}</div>`).join('');progress.style.width=(step/3*100)+'%';scoreEl.textContent=score;livesEl.textContent=lives;movementEl.textContent=roman[level]||String(level+1);chordNameEl.textContent=L.name}
 function resetJump(){clearTimeout(jumpTimer);jumpTimer=null;jumpStarted=-Infinity;lander.classList.remove('jump');stage.classList.remove('flash')}
@@ -79,11 +78,7 @@ function jump(){
  if(!hazard||hazard.hit||now-jumpStarted<JUMP_MS)return;
  resetJump();jumpStarted=now;lander.classList.add('jump');stage.classList.add('flash');
  jumpTimer=setTimeout(()=>{lander.classList.remove('jump');stage.classList.remove('flash')},JUMP_MS);
- // A quiet rising cue confirms takeoff without covering the approaching tone.
- const at=ctx.currentTime,o=ctx.createOscillator(),g=ctx.createGain();
- o.type='sine';o.frequency.setValueAtTime(280,at);o.frequency.exponentialRampToValueAtTime(560,at+.12);
- g.gain.setValueAtTime(.035,at);g.gain.exponentialRampToValueAtTime(.0001,at+.15);
- o.connect(g);g.connect(master);o.start();o.stop(at+.16);o.onended=()=>{o.disconnect();g.disconnect()};
+ sampleAudio.jumpFeedback(JUMP_MS/1000);
  status.textContent='JUMP · clear the sound at the center';
 }
 function resolveJump(){
@@ -93,7 +88,6 @@ function resolveJump(){
  if(height<.60+level*.02+step*.028){miss();return}
  clearSound();
 }
-function successTone(f){sampleAudio.glass(f*4,.8)}
 function collapseSound(){sampleAudio.resetChord();const now=ctx.currentTime,o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(180,now);o.frequency.exponentialRampToValueAtTime(42,now+.7);g.gain.value=.08;o.connect(g);g.connect(master);g.gain.exponentialRampToValueAtTime(.0001,now+.72);o.start();o.stop(now+.75);o.onended=()=>{o.disconnect();g.disconnect()}}
 function direction(){const L=current();if(L.dir==='rtl')return 1;if(L.dir==='alternate'){nextDir*=-1;return nextDir}return Math.random()<.5?1:-1}
 function stopHazard(){
@@ -106,8 +100,6 @@ function spawn(){
  if(!running||paused)return;
  const L=current(),targetIndex=step+1;if(targetIndex>3)return;
  const dur=Math.max(2.8,L.dur-step*.22),dir=direction(),pitch=L.notes[targetIndex];
- hazardDelay.delayTime.setTargetAtTime(L.delay*.34,ctx.currentTime,.05);
- hazardFeedback.gain.setTargetAtTime(.15+L.wet*.25,ctx.currentTime,.05);
  const note=sampleAudio.glass(pitch*4,dur,dir,-dir,hazardBus),sources=[note.o],bus=note.g;
  hazard={center:performance.now()+dur*500,hit:false,targetIndex,sources,bus};
  const thisHazard=hazard;
@@ -115,7 +107,7 @@ function spawn(){
 }
 async function miss(){
  if(!hazard||hazard.hit)return;
- stopHazard();resetJump();lives--;paused=true;clearTimers();collapseSound();renderChord();
+ stopHazard();lives--;paused=true;clearTimers();collapseSound();renderChord();
  status.textContent='MISS — '+lives+' '+(lives===1?'life':'lives')+' remaining';
  big.textContent=lives?'ROOT RESET':'GAME OVER';small.textContent=lives?current().labels[0]+' survives':'Hull gone';
  sampleAudio.lifePulses(lives);
@@ -127,6 +119,9 @@ async function miss(){
 }
 async function completeLevel(){
  paused=true;running=false;clearTimers();stopHazard();
+ // Let the landing cue finish before the harmonic reward begins.
+ const landingWait=Math.max(0,jumpStarted+JUMP_MS+180-performance.now());
+ if(landingWait)await new Promise(resolve=>setTimeout(resolve,landingWait));
  const fanfare=sampleAudio.completion();
  stage.classList.add('shatter');big.textContent=current().name+' COMPLETE';small.textContent='HARMONY COMPLETE';status.textContent='Rising triads · next sound world…';
  await fanfare;stage.classList.remove('shatter');
@@ -137,7 +132,7 @@ async function completeLevel(){
 }
 function clearSound(){
  if(!hazard||hazard.hit)return;
- stopHazard();clearTimers();score++;step++;addVoice(step);if(step<3)successTone(current().notes[step]);renderChord();
+ stopHazard();clearTimers();score++;step++;renderChord();
  status.textContent=current().labels[step]+' CLEARED · '+(3-step)+' tones remaining';
  if(step>=3){completeLevel();return}
  big.textContent='JUMP '+current().labels[step+1];small.textContent='Chord '+(step+1)+'/4';timers.push(setTimeout(spawn,900));
@@ -151,7 +146,7 @@ async function startGame(){
    buildWorld();renderChord();big.textContent='BLOOM';small.textContent='WORLD ONE · Cmaj9';
    status.textContent='World one. Bloom.';await sampleAudio.announce('world-1');
    running=true;paused=false;big.textContent='JUMP '+current().labels[1];small.textContent=current().desc;
-   status.textContent='Root locked: C. Jump over the incoming E just before it reaches the center.';timers.push(setTimeout(spawn,1000));
+   status.textContent='Listen for takeoff and landing. Jump over the incoming E just before it reaches the center.';timers.push(setTimeout(spawn,1000));
  }catch(error){
    stopWorld();running=false;paused=false;big.textContent='RETRY';small.textContent='Tap to reload the soundscape';status.textContent='Audio could not load. Check your connection and tap again.';console.error(error);
  }

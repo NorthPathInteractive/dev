@@ -13,7 +13,7 @@ const fluxHz = midi => 440*2**((midi-69)/12);
 class FluxAudio {
  constructor(ctx,master){
   this.ctx=ctx;this.master=master;this.buffers=new Map();this.worldNodes=[];this.pads=[];this.harmony=[];this.effects=[];
-  this.voice=null;this.musicTimer=null;this.world=null;this.fanfareNodes=[];
+  this.voice=null;this.musicTimer=null;this.world=null;this.fanfareNodes=[];this.jumpNodes=[];
   this.worldGain=ctx.createGain();this.worldGain.connect(master);
  }
  async load(){
@@ -43,7 +43,7 @@ class FluxAudio {
   delay.delayTime.value=.5625;wet.gain.value=this.world.wet;feedback.gain.value=.28;
   filter.connect(this.worldGain);filter.connect(delay);delay.connect(wet);wet.connect(this.worldGain);delay.connect(feedback);feedback.connect(delay);
   this.padBus=filter;this.effects=[filter,delay,wet,feedback];
-  this.epoch=this.ctx.currentTime;this.phrase=-1;this.advanceHarmony();this.addPad(0);
+  this.epoch=this.ctx.currentTime;this.phrase=-1;this.advanceHarmony();
   if(index===0){const pulse=this.source('bloom-heartbeat',.15,this.worldGain,1,true);pulse.o.start();this.worldNodes.push(pulse)}
   // The audio clock keeps 16-beat boundaries stable when the audio context suspends.
   this.musicTimer=setInterval(()=>this.advanceHarmony(),100);
@@ -56,8 +56,8 @@ class FluxAudio {
   this.phrase=phrase;
   const at=Math.max(this.ctx.currentTime,this.epoch+phrase*secondsPerPhrase);
   this.harmony.forEach(n=>this.fadeOut(n,at,1.7));
-  this.harmony=this.world.chords[phrase%4].map((m,i)=>this.pad(fluxHz(m),i===0?.08:.055,at,2));
-  this.harmony.push(this.pad(fluxHz(this.world.chords[phrase%4][0]-12),.12,at,2));
+  // One quiet low note preserves the world texture without building a chord.
+  this.harmony=[this.pad(fluxHz(this.world.chords[phrase%4][0]-12),.065,at,2)];
  }
  pad(frequency,gain,at=this.ctx.currentTime,attack=1.8){
   const n=this.source(this.world.sample+'-pad-c3',0,this.padBus,frequency/130.8128,true);
@@ -69,8 +69,7 @@ class FluxAudio {
   else{node.g.gain.cancelScheduledValues(at);node.g.gain.setValueAtTime(node.g.gain.value,at)}
   node.g.gain.linearRampToValueAtTime(0,at+duration);try{node.o.stop(at+duration+.02)}catch{}
  }
- addPad(index){this.pads.push(this.pad(this.notes[index],.20))}
- resetChord(){this.pads.splice(1).forEach(n=>this.fadeOut(n,this.ctx.currentTime,.65))}
+ resetChord(){}
  glass(frequency,duration,panStart=0,panEnd=panStart,target=this.master){
   const node=this.source('bloom-glass-c5',0,target,frequency/523.251),pan=this.ctx.createStereoPanner(),now=this.ctx.currentTime;
   node.g.disconnect();node.g.connect(pan);pan.connect(target);
@@ -79,10 +78,25 @@ class FluxAudio {
   node.o.start();node.o.stop(now+duration+.02);
   node.o.onended=()=>{node.o.disconnect();node.g.disconnect();pan.disconnect()};return node;
  }
+ jumpFeedback(duration){
+  const now=this.ctx.currentTime;
+  for(const [offset,from,to,gain,length,type] of [[0,330,880,.075,.16,'triangle'],[duration,140,55,.12,.18,'sine']]){
+   const o=this.ctx.createOscillator(),g=this.ctx.createGain(),at=now+offset,node={o,g};
+   o.type=type;o.frequency.setValueAtTime(from,at);o.frequency.exponentialRampToValueAtTime(to,at+length);
+   g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(gain,at+.008);g.gain.exponentialRampToValueAtTime(.0001,at+length);
+   o.connect(g);g.connect(this.master);this.jumpNodes.push(node);
+   o.onended=()=>{o.disconnect();g.disconnect();this.jumpNodes=this.jumpNodes.filter(n=>n!==node)};
+   o.start(at);o.stop(at+length);
+  }
+ }
  completion(){
   clearInterval(this.musicTimer);this.musicTimer=null;
   const now=this.ctx.currentTime;
   this.worldGain.gain.cancelScheduledValues(now);this.worldGain.gain.setTargetAtTime(.40,now,.08);
+  // Reveal the completed target chord only after the last landing.
+  this.harmony.forEach(n=>this.fadeOut(n,now,.08));this.harmony=[];
+  this.pads=this.notes.map(f=>this.pad(f,.15,now,.06));
+  this.pads.forEach(n=>this.fadeOut(n,now+1.8,1.2));
   // Seven ascending triad inversions, with the final chord ringing to three seconds.
   const hits=[0,.29,.58,.96,1.25,1.54,2.02];
   const root=this.world.root<45?this.world.root+12:this.world.root;
@@ -120,8 +134,8 @@ class FluxAudio {
  }
  stopWorld(){
   clearInterval(this.musicTimer);this.musicTimer=null;
-  [...this.worldNodes,...this.fanfareNodes].forEach(n=>{try{n.o.stop()}catch{}});
+  [...this.worldNodes,...this.fanfareNodes,...this.jumpNodes].forEach(n=>{try{n.o.stop()}catch{}});
   this.effects.forEach(n=>n.disconnect());
-  this.worldNodes=[];this.pads=[];this.harmony=[];this.effects=[];this.fanfareNodes=[];this.world=null;
+  this.worldNodes=[];this.pads=[];this.harmony=[];this.effects=[];this.fanfareNodes=[];this.jumpNodes=[];this.world=null;
  }
 }

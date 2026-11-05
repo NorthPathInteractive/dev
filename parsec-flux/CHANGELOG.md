@@ -1,5 +1,11 @@
 # Parsec Flux Changelog
 
+## v0.72 — 2026-11-04
+- Distinct rising takeoff and low landing cues, scheduled on the audio clock.
+- Incoming notes play separately, without accumulating held tones or replaying cleared notes.
+- Use a quiet single-note world pad during play; reveal the complete target chord only at completion.
+- Wait until the final landing cue finishes before the chord and three-second fanfare.
+
 ## v0.71 — 2026-11-04
 - Start and restart audio from a completed tap, allowing iPhone browsers to unlock audio.
 - Keep immediate touch-down jumps during gameplay without firing twice.
